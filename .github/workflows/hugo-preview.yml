@@ -27,7 +27,7 @@ jobs:
 
       - name: Set up preview URL
         id: set_preview_url
-        run: echo "PREVIEW_URL=https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/previews/${{ github.event.pull_request.number }}/" >> $GITHUB_ENV
+        run: echo "PREVIEW_URL=https://phuchoang.sbs/previews/${{ github.event.pull_request.number }}/" >> $GITHUB_ENV
 
       - name: Build Hugo site
         run: hugo --minify --baseURL "${{ env.PREVIEW_URL }}"

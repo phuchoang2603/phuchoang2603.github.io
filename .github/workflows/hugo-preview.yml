@@ -1,4 +1,4 @@
-name: Hugo PR Preview
+name: hugo-pr-preview
 
 on:
   pull_request:

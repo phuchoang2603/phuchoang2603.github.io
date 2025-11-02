@@ -3,8 +3,8 @@
 # https://blowfish.page/docs/getting-started/
 
 timeout = "120s"
-theme = "blowfish"                # UNCOMMENT THIS LINE
-baseURL = "https://phuchoang.sbs"
+theme = "blowfish" # UNCOMMENT THIS LINE
+# baseURL = "https://phuchoang.sbs"
 defaultContentLanguage = "en"
 
 # pluralizeListTitles = "true" # hugo function useful for non-english languages, find out more in  https://gohugo.io/getting-started/configuration/#pluralizelisttitles

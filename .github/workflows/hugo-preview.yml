@@ -4,13 +4,15 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
-# Sets permissions of the GITHUB_TOKEN
 permissions:
-  contents: write # Allows pushing to the gh-pages branch
-  pull-requests: write # Allows commenting on the pull request
+  contents: read # To checkout the code
+  pages: write # To upload the artifact and deploy
+  id-token: write # To authenticate the deployment
+  pull-requests: write # To post a comment
 
 jobs:
-  build_and_deploy_preview:
+  # Build job: builds site and uploads artifact
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -25,22 +27,40 @@ jobs:
           hugo-version: "latest"
           extended: true
 
-      - name: Set up preview URL
-        id: set_preview_url
-        run: echo "PREVIEW_URL=https://phuchoang.sbs/previews/${{ github.event.pull_request.number }}/" >> $GITHUB_ENV
-
       - name: Build Hugo site
-        run: hugo --minify --baseURL "${{ env.PREVIEW_URL }}"
+        # We build with a relative baseURL.
+        # The deploy action handles the final, complex preview URL.
+        run: hugo --minify --baseURL "/"
 
-      - name: Deploy to GitHub Pages preview
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
-          destination_dir: previews/${{ github.event.pull_request.number }}
-          # This will create a 'gh-pages' branch if it doesn't exist
-          # and push the content to 'previews/<PR_NUMBER>' within it.
-          publish_branch: gh-pages
+          # Upload the 'public' folder
+          path: ./public
+
+  # Deploy job: takes the artifact and deploys it to Pages
+  deploy:
+    # This job depends on the build job finishing
+    needs: build
+    runs-on: ubuntu-latest
+
+    # Grant permissions for this job
+    permissions:
+      pages: write # To deploy to Pages
+      id-token: write # To authenticate
+      pull-requests: write # To post a comment
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      # Get the URL from the output of the 'deployment' step
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        # This action automatically finds the artifact from the 'build' job
 
       - name: Add comment with preview link
         uses: peter-evans/create-or-update-comment@v4
@@ -48,4 +68,4 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             🚀 Pull Request Preview available at:
-            ${{ env.PREVIEW_URL }}
+            ${{ steps.deployment.outputs.page_url }}

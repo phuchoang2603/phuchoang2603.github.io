@@ -13,8 +13,6 @@ featureimage: https://i.ibb.co/chTK0Djn/image.png
 ---
 This is the story of a project. A project to build an AI-powered pipeline for ArXiv papers. It was a journey that started with a cool idea about AI agents and ended with me wrestling Docker, n8n, and Python into submission.
 
-https://phuchoang2603.github.io/sis-arxiv-vad-papers/
-
 {{< github repo="phuchoang2603/sis-arxiv-vad-papers" showThumbnail=true >}}
 
 ## Part 1: The AI Agent Dream (and Subsequent Nightmare)

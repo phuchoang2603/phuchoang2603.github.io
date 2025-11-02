@@ -11,6 +11,8 @@ tags:
 draft: false
 featureimage: https://i.ibb.co/chTK0Djn/image.png
 ---
+{{< github repo="phuchoang2603/sis-arxiv-vad-papers" showThumbnail=true >}}
+
 This repository contains the source code for the "SIS ArXiv VAD Papers" website, a [Hugo](https://gohugo.io/) static site using the [Blowfish](https://blowfish.page/) theme.
 
 This project is a comprehensive platform for managing, processing, and displaying ArXiv research papers. It combines a Hugo static site with a powerful backend of containerized services for AI-driven PDF processing, metadata extraction, and ArXiv interaction.

@@ -35,11 +35,11 @@ jobs:
       # --- Dynamically set the BaseURL ---
       - name: Set up Base URL for PR
         if: github.event_name == 'pull_request'
-        run: echo "BASE_URL=https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/previews/${{ github.event.pull_request.number }}/" >> $GITHUB_ENV
+        run: echo "BASE_URL=https://${{ github.repository_owner }}.github.io/previews/${{ github.event.pull_request.number }}/" >> $GITHUB_ENV
 
       - name: Set up Base URL for Main
         if: github.event_name == 'push'
-        run: echo "BASE_URL=https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/" >> $GITHUB_ENV
+        run: echo "BASE_URL=https://${{ github.repository_owner }}.github.io/" >> $GITHUB_ENV
 
       - name: Cache Hugo Modules
         uses: actions/cache@v4

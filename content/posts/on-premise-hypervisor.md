@@ -5,7 +5,10 @@ date: 2025-10-30
 tags:
   - proxmox
 draft: false
-featureimage: https://i.ibb.co/tpJMVRjm/image.png
+featureimage: https://i.ibb.co/7xFFLMjN/image.png
+series:
+  - On-Premise 101
+series_order: 2
 ---
 
 In the previous part, we covered how I started playing around with my hand-me-down computer and then escalated to building a whole 3-node cluster. It's been a 3-year journey, and there have been so many changes to the software stack I host. But no matter what, there's one thing I've used consistently from beginning to end: `Proxmox` (Hypervisor). So before we dive into how I deploy my applications on Docker or Kubernetes, I'll show you the glue that connects the hardware we just built to all the software we're going to deploy.
@@ -15,15 +18,15 @@ Many of you have probably heard the term `Virtual Machines (VMs)`, the ones that
 
 ![](https://i.ibb.co/DD2jrT2J/image.png)
 
-That's where the `Type 1 Hypervisor` comes in. It can still create Virtual machines like above. But right now, notice it no longer has the `Host OS` between it and the Hardware resources. That means it can now directly access the full performance of the machine, without relying on the `Host OS`'s translation layer, making the Virtual machine running on top of it much more efficient. Maybe you don't know this, but when you enable `Windows Subsystem for Linux 2 (WSL2)`, Windows re-configures itself to run on top of its own `Type 1 Hypervisor` called `Hyper-V`. `WSL2` then runs as a separate, lightweight `VM`directly on that same hypervisor, side-by-side with Windows, providing full system call compatibility. Other examples include `VMWare ESX` or `ESXi`, and notably, `Proxmox`.
+That's where the `Type 1 Hypervisor` comes in. It can still create Virtual machines like above. But right now, notice it no longer has the `Host OS` between it and the Hardware resources. That means it can now directly access the full performance of the machine, without relying on the `Host OS`'s translation layer, making the Virtual machine running on top of it much more efficient. Maybe you don't know this, but when you enable Windows Subsystem for Linux 2 (WSL2), Windows re-configures itself to run on top of its own `Type 1 Hypervisor` called Hyper-V. WSL2 then runs as a separate, lightweight VM directly on that same hypervisor, side-by-side with Windows, providing full system call compatibility. Other examples include `VMWare ESX` or `ESXi`, and notably, `Proxmox`.
 
-> Proxmox` is an open-source virtualization management solution that uses `KVM` to manage virtual machines and `LXC` to manage containers. It is a `Type 1 Hypervisor` that built on a Debian-based Linux distribution, and is managed through a central web interface for tasks like clustering, high availability, storage, and networking.
+> `Proxmox` is an open-source virtualization management solution that uses `KVM` to manage virtual machines and `LXC` to manage containers. It is a `Type 1 Hypervisor` that built on a Debian-based Linux distribution, and is managed through a central web interface for tasks like clustering, high availability, storage, and networking.
 
-So that explains `Proxmox`. For me, the biggest benefit of using `Proxmox` was to easily pass through computer resources to bypass even the Hypervisor layer itself, eliminating significant overhead and allowing the `VM` to receive near-native hardware performance. This allows me to pass through a GPU into a `VM` to run inference on LLM models at the highest VRAM usage and computation; or pass through HDDs to a `VM` to use as a NAS (more on this in the next part). Additionally, as mentioned above, you get a beautiful web interface to manage the `VM`s and other useful features, so it has the potential to replace even Kubernetes or TrueNAS. However, I prefer specialization over convenience. I'd rather use a dedicated tool that does one job perfectly than a single, all-in-one tool that does multiple jobs just 'okay'.
+So that explains `Proxmox`. For me, the biggest benefit of using `Proxmox` was to easily pass through computer resources to bypass even the Hypervisor layer itself, eliminating significant overhead and allowing the VM to receive near-native hardware performance. This allows me to pass through a GPU into a VM to run inference on LLM models at the highest VRAM usage and computation; or pass through HDDs to a VM to use as a NAS (more on this in the next part). Additionally, as mentioned above, you get a beautiful web interface to manage the VMs and other useful features, so it has the potential to replace even Kubernetes or TrueNAS. However, I prefer specialization over convenience. I'd rather use a dedicated tool that does one job perfectly than a single, all-in-one tool that does multiple jobs just 'okay'.
 
-![](https://i.ibb.co/tpJMVRjm/image.png)
+![](https://i.ibb.co/7xFFLMjN/image.png)
 
-To demonstrate the ability of `Proxmox`, I will show you a guide to create a `VM` that is capable of directly inheriting a Nvidia GPU from the host machine, allowing the applications running inside the `VM` to utilize its fullest performance. However, note that this is just one of many examples you can do with `Proxmox`. In the next part, I will show you how to even virtualize a NAS device on it, or provision multiple `VM`s at once.
+To demonstrate the ability of `Proxmox`, I will show you a guide to create a  VM  that is capable of directly inheriting a Nvidia GPU from the host machine, allowing the applications running inside the  VM  to utilize its fullest performance. However, note that this is just one of many examples you can do with `Proxmox`. In the next part, I will show you how to even virtualize a NAS device on it, or provision multiple  VMs in one command.
 
 ## Getting Started: My Proxmox Post-Install Toolkit
 I'm not going to cover the in-depth guide to install `Proxmox` as it's similar to installing any other OS: just get the ISO file, burn it to a USB, turn off the computer, boot from the USB, and follow the installation guide (the default options are pretty solid). The settings they ask you to configure from the beginning can also be changed later after installation. So no need to be afraid of anything.
@@ -44,18 +47,18 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/`Proxm
 
 ![](https://i.ibb.co/NnCnBqNy/image.png)
 
-This script is fantastic because it creates a `cloud-init` template, which is much faster than manually installing from an ISO. It lets you pre-configure your username, password, and networking, so the `VM` is ready to go in seconds. It's the perfect way to spin up new `VM`s quickly, especially when you plan to make more for a Kubernetes cluster later. If you want more useful scripts like this, feel free to hop over to [here](https://community-scripts.github.io/`Proxmox`VE/).
+This script is fantastic because it creates a `cloud-init` template, which is much faster than manually installing from an ISO. It lets you pre-configure your username, password, and networking, so the  VM  is ready to go in seconds. It's the perfect way to spin up new  VM s quickly, especially when you plan to make more for a Kubernetes cluster later. If you want more useful scripts like this, feel free to hop over to [here](https://community-scripts.github.io/`Proxmox`VE/).
 
 ## Passing a GPU to a VM
 Firstly, we don't want the `Proxmox` host system utilizing our GPU(s), so we need to blacklist the drivers. I'm not gonna provide the whole full guide, as it's a really long process and requires you to know your system to adjust accordingly. But here's the [ultimate guide](https://www.reddit.com/r/homelab/comments/b5xpua/the_ultimate_beginners_guide_to_gpu_passthrough/) that provides detailed explanations and steps for doing so.
 
-Secondly, after we verify the GPU was passed through successfully, we need to set up the `VM` to receive it:
+Secondly, after we verify the GPU was passed through successfully, we need to set up the  VM  to receive it:
 1. After Ubuntu has finished installing and is reachable by SSH on your network, shut down the `VM and go to the "Hardware" tab.
 2. Click "Add" > "PCI Device". Select "Raw Device" and find your GPU. Click the "Advanced" checkbox, "All Functions" checkbox, and "PCI-Express" checkbox, then hit Add.
-3. Start the `VM` again and type `lspci` in the console. Search for your GPU. If you see it, you're good to go!
+3. Start the  VM  again and type `lspci` in the console. Search for your GPU. If you see it, you're good to go!
 ![](https://i.ibb.co/pr62NYx7/image.png)
 
-Thirdly, we need to install the drivers inside the `VM` so that the software can utilize the GPU correctly. There are multiple ways to do this, but I always refer to this [site](https://documentation.ubuntu.com/server/how-to/graphics/install-nvidia-drivers/index.html) to install.
+Thirdly, we need to install the drivers inside the  VM  so that the software can utilize the GPU correctly. There are multiple ways to do this, but I always refer to this [site](https://documentation.ubuntu.com/server/how-to/graphics/install-nvidia-drivers/index.html) to install.
 
 ```bash
 sudo apt update && sudo apt install ubuntu-drivers-common
@@ -74,7 +77,7 @@ nvidia-smi
 ## Installing Docker (And Why I Use a VM, Not LXC)
 Note that `Proxmox` also has LXC, as an alternative to Docker. While LXC offers better performance, the software support and ease of use aren't as good as Docker. Not to mention it is harder to pass through a full physical device (like a GPU) to an LXC container, because by design, it's tightly integrated with the host kernel.
 
-Therefore, I only use LXC for critical software that needs to stay active alongside the machine, such as Tailscale or Cloudflared. For most other things, I use a `VM` with Docker to experiment and test. If you want to install Docker and Nvidia Container Toolkit on the `VM` to help containers leverage your GPU, you'll want to run these commands:
+Therefore, I only use LXC for critical software that needs to stay active alongside the machine, such as Tailscale or Cloudflared. For most other things, I use a  VM  with Docker to experiment and test. If you want to install Docker and Nvidia Container Toolkit on the  VM  to help containers leverage your GPU, you'll want to run these commands:
 
 ```bash
 # Add Docker's repostiory to apt sources
@@ -115,6 +118,6 @@ sudo docker run --rm --runtime=nvidia --gpus all ubuntu nvidia-smi
 ```
 
 ## Summary & What's Next: Prepping for TrueNAS
-And that finishes the whole step of setting up a `VM` on top of a `Type 1 Hypervisor` to use an Nvidia GPU with near-native performance. Now you can go ahead and install any Docker containers you want.
+And that finishes the whole step of setting up a  VM  on top of a `Type 1 Hypervisor` to use an Nvidia GPU with near-native performance. Now you can go ahead and install any Docker containers you want.
 
-But I'm not doing that right away, because I want those containers to use NFS storage. That way, even if the `VM` stops working correctly, I can still spin up a new one without losing my persistent application data. This approach is also helpful if you want to migrate from Docker to Kubernetes, as it allows you to reuse the data by just pointing to the correct NFS path. To do this, we have to set up TrueNAS, a network-attached storage platform.
+But I'm not doing that right away, because I want those containers to use NFS storage. That way, even if the  VM  stops working correctly, I can still spin up a new one without losing my persistent application data. This approach is also helpful if you want to migrate from Docker to Kubernetes, as it allows you to reuse the data by just pointing to the correct NFS path. To do this, we have to set up TrueNAS, a network-attached storage platform.

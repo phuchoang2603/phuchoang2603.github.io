@@ -13,7 +13,6 @@ hotlinkFeatureImage = false
 fingerprintAlgorithm = "sha512"
 giteaDefaultServer = "https://git.fsfe.org"
 forgejoDefaultServer = "https://v11.next.forgejo.org"
-firebase = {}
 fathomAnalytics = {}
 umamiAnalytics = {}
 selineAnalytics = {}
@@ -47,8 +46,8 @@ disableHeroImageFilter = false
 
 [article]
 showDate = true
-showViews = false
-showLikes = false
+showViews = true
+showLikes = true
 showDateOnlyInArticle = false
 showDateUpdated = false
 showAuthor = false
@@ -115,3 +114,12 @@ showTableOfContents = true
 groupByYear = false
 cardView = false
 cardViewScreenWidth = false
+
+[firebase]
+apiKey = "AIzaSyCJUh8_eWSkkvDZwHdrPNBdyke7Dk422uI"
+authDomain = "phuchoang-sbs.firebaseapp.com"
+projectId = "phuchoang-sbs"
+storageBucket = "phuchoang-sbs.firebasestorage.app"
+messagingSenderId = "359041758586"
+appId = "1:359041758586:web:12cabd41bb64a6bda452c3"
+measurementId = "G-HVDVFDQDMC"

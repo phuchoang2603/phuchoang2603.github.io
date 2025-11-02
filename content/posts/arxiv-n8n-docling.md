@@ -11,19 +11,21 @@ tags:
 draft: false
 featureimage: https://i.ibb.co/chTK0Djn/image.png
 ---
-This is the story of a project. A project to build an AI-powered pipeline for ArXiv papers. It was a journey that started with a cool idea about AI agents and ended with me wrestling Docker, n8n, and Python into submission.
+This is my story of how I attempt to build an AI-powered pipeline for ArXiv papers. It was a journey that started with a cool idea about AI agents and ended with me wrestling Docker, n8n, and Python into submission.
 
 {{< github repo="phuchoang2603/sis-arxiv-vad-papers" showThumbnail=true >}}
 
 ## Part 1: The AI Agent Dream (and Subsequent Nightmare)
 
-My first idea was to build a smart AI agent using n8n that could talk to ArXiv. I wanted an LLM that could actually *do* things—search for papers, download them, and even read them.
+My first idea was to build a smart AI agent using n8n that could talk to ArXiv. I wanted an LLM that could actually search for papers, download them, and even read them.
 
 The [Docker Model Context Protocol (MCP)](https://github.com/docker/mcp-gateway) looked like the perfect tool for this. I found an `arxiv-mcp-server` on GitHub and my first task was just getting the thing to build.
 
 ### Building the ArXiv Server
 
-The original `Dockerfile` I found was... a bit much. I figured I could simplify it using `uv`, since its official base images are clean and come with it pre-installed.
+{{< github repo="blazickjp/arxiv-mcp-server" showThumbnail=true >}}
+
+I found the repo above, which had already configured an mcp server just as I wanted. However, when I attempted to get it running, I found the original `Dockerfile` was... a bit much. I figured I could simplify it using `uv`, since its official base images are clean and come with it pre-installed.
 
 My new `Dockerfile` was way simpler:
 

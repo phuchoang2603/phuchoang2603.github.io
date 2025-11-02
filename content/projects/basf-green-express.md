@@ -14,7 +14,7 @@ This product emerged from my participation in the BASF Innovation Challenge, a n
 
 {{< raw >}}
   <div>
-<iframe src="https://drive.google.com/file/d/13dGRGnkBOVaK_T7o92axm2147pgSOTUP/preview" width="640" height="480" allow="autoplay"></iframe>
+<iframe src="https://drive.google.com/file/d/13dGRGnkBOVaK_T7o92axm2147pgSOTUP/preview" width="100%" height="480" allow="autoplay"></iframe>
   </div>
 {{< /raw >}}
 

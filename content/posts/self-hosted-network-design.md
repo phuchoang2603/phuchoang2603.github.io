@@ -58,7 +58,9 @@ Needless to say, I have chosen `Tailscale` to work with. I couldn't believe it i
 
 ![](https://i.ibb.co/8DM5Bswh/image.png)
 
-Currently, I have `Tailscale` installed on my `OpenWRT` router, which advertises a subnet route of `10.69.0.0/16` and also acts as an exit node. If I go outside, I just simply open the `Tailscale` app on my phone or my laptop, authenticate, and bang, connected. If I carry a device that can't install `Tailscale`, I can simply connect it to my travel router (which is the `gl-ar300m` device in the image above), which I have wrote about [here](https://phuchoang.sbs/posts/self-hosted-travel-router/).
+Currently, I have `Tailscale` installed on my `OpenWRT` router, which advertises a subnet route of `10.69.0.0/16` and also acts as an exit node. If I go outside, I just simply open the `Tailscale` app on my phone or my laptop, authenticate, and bang, connected. If I carry a device that can't install `Tailscale`, I can simply connect it to my travel router (which is the `gl-ar300m` device in the image above), which I have wrote in the article below.
+
+{{< article link="/posts/self-hosted-travel-router/" showSummary=true compactSummary=true >}}
 
 Don't get me wrong, `Cloudflare Tunnel` is still a solid option. It has one feature that `Tailscale` couldn't provide, which is the ability to allow guest users to connect to my home services without them needing to install an app or authenticate anything. This is extremely useful for a web blog when I want to showcase something. But for now, I have figured out a way to combine `Tailscale` and an additional VPS (a virtual private server, which is the `racknerd-e54f406` device in the image above) to achieve this.
 

@@ -11,11 +11,7 @@ featureimage: https://i.redd.it/47eryezt0xg91.png
 ---
 It all started with a computer my mom saved from the trash heap at her office. It was a standard HP Prodesk 600 G4—nothing special, and since I already had a PC and a laptop, I had no idea what to do with it. Just installing Windows on it felt like a waste. I knew it could be something more than just another desktop collecting dust.
 
-{{< raw >}}
-  <div>
-<iframe width="100%" height="480" src="https://www.youtube.com/embed/zPmqbtKwtgw?si=La05tRlsWPWOcpEO&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-  </div>
-{{< /raw >}}
+{{< youtubeLite id="zPmqbtKwtgw" label="Video demo" >}}
 
 That simple idea kicked off a journey that completely changed what I thought I was passionate about and what I wanted to do with my life.
 
@@ -27,11 +23,7 @@ https://voz.vn/t/huong-dan-build-case-nas-xpenlogy-dsm-7-2-full-license-synology
 
 Frustrated, I kept searching and found **Proxmox**. This was the "aha!" moment. Proxmox is an operating system built specifically to run other computers _inside_ of it. Think of it like a digital nesting doll. It was stable, powerful, and let me create a virtual "computer" just for my photo backups. I could finally experiment and mess around without the fear of crashing everything. The beast was finally tamed.
 
-{{< raw >}}
-  <div>
-<iframe width="100%" height="480" src="https://www.youtube.com/embed/VOL-GLi8Qqw?si=-sOHnxX0t-z9jhFw&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-  </div>
-{{< /raw >}}
+{{< youtubeLite id="VOL-GLi8Qqw" label="Video demo" >}}
 
 ### Finding a Real Purpose (With a Little Help from a GPU)
 

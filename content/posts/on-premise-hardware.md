@@ -23,7 +23,8 @@ Looking back, I started this journey 3 years ago. At the time, I had an `HP Prod
 
 I thought it was so cool that you could transfer a file that big from one computer to another, without any wires, almost instantly. I checked the specs of the NAS and found out it was nothing powerful—just a bunch of HDDs and storage. That's when I realized I could probably do all of that with my old computer, too.
 
-_If you want to read what I was doing with my old computer at that time, feel free to read [my initial self-hosting story](https://phuchoang.sbs/posts/self-hosted-initial-story/)._
+_If you want to know what I was doing with my old computer at that time, feel free to read the article below_
+{{< article link="/posts/self-hosted-initial-story/" showSummary=true compactSummary=true >}}
 
 The specs of my PC weren't really powerful, but its iGPU was capable enough to run Frigate (an NVR camera detection service) and Jellyfin (for video transcoding) pretty well. Later on, I tried to upgrade the PC specs , such as plugging in a graphics card for LLM models and upgrading the RAM to 16GB. But since it was a Small-Form-Factor (SFF) PC, it had limited upgrade options.
 
@@ -74,7 +75,8 @@ So right now, I have 3 PCs, which is perfect for me to set up the Proxmox 3-node
 ![](https://i.ibb.co/LWNSPgY/IMG-0893.jpg)
 
 ## The Bottleneck: Fixing a Failing Cluster with a Dedicated Network
-_If you want to know more about the background of my network design for my homelab, feel free to read [this post](https://phuchoang.sbs/posts/self-hosted-network-design/)._
+_If you want to know more about the background of my network design for my homelab, feel free to read this post
+{{< article link="/posts/self-hosted-network-design/" showSummary=true compactSummary=true >}}
 
 For a long time while working with my homelab, I only had a single PC at one place at the time: the `HP Prodesk` when I was in Vietnam, and the `Lenovo P520` when I was in the US. Therefore, I always connected the LAN cable from the PC directly to the router. But since I now have 3 PCs together at one place and plan to add a PS4 for remote gaming, relying on the ports on the router wouldn't allow me to have more than 3 devices connected at the same time. Because of this, I got myself a basic 1 Gbps switch with 8 additional ports back in the summer.
 
@@ -124,7 +126,8 @@ Now that the physical foundation is laid, it's time to build on top of it. In th
 
 1. Creating a ZFS-based NAS: How I'm using **TrueNAS** (or Proxmox's built-in ZFS) to manage my 6TB of storage.
     
-2. Spinning up the Kubernetes Cluster: We'll provision the VMs that will form our 3-node k8s cluster using **Terraform** and **Ansible** with [this project](https://phuchoang.sbs/projects/kubernetes-proxmox/).
+2. Spinning up the Kubernetes Cluster: We'll provision the VMs that will form our 3-node k8s cluster using **Terraform** and **Ansible** with this project.
+{{< article link="/projects/kubernetes-proxmox/" showSummary=true compactSummary=true >}}
     
 3. Automating Everything with GitOps: Finally, I'll show you how I use **ArgoCD** to automatically deploy and manage all my applications (Jellyfin, Frigate, and more) on Kubernetes.
     

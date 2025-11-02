@@ -65,6 +65,9 @@ Also, as I'll explain later in this article, I was stuck with the issue of Tails
 
 
 ## Install Tailscale
+*If you want more detail on how I set up NextDNS and Tailscale at my home network, you can read it here*
+{{< article link="/posts/self-hosted-network-design/" showSummary=true compactSummary=true >}}
+
 Now for the fun part. I found and tried using this [repo](https://github.com/Admonstrator/glinet-tailscale-updater) but realized the device only had 16MB of NOR ROM, of which 6MB had already been reserved for the firmware. So when I ran the script, it warned me I didn't have enough storage, as it required 15MB.
 
 Therefore, I decided to follow this [repo](https://github.com/adyanth/openwrt-tailscale-enabler). Instead of relying on the 16MB NOR ROM storage, it stored the `tailscaled` and `tailscale` binaries in `/tmp` (i.e., the 128 MB RAM) instead. But it still stored the init daemon (which is used for downloading those binaries every time the router boots up) and the state file to keep the login and authentication persistent.
@@ -160,7 +163,7 @@ Here's my school's configuration:
 
 ## (Optional) Install NextDNS to have local DNS resolution and Ads Blocking on the go
 
-If you want more detail on how I set up NextDNS and Tailscale, you can read it [here](https://phuchoang.sbs/posts/self-hosted-network-design/). But for now, it is my main DNS server to resolve my Kubernetes Traefik resolutions, for ad-blocking services, and for parental controls to limit myself from doom-scrolling too much. Installing it was easier than Tailscale. Just get the NextDNS configuration profile ID, paste it in after you install the package, and you're good to go.
+Installing it was easier than Tailscale. Just get the NextDNS configuration profile ID, paste it in after you install the package, and you're good to go.
 
 1. Go to System -> Software
 2. Click the "Update lists" button

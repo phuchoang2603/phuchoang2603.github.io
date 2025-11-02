@@ -1,0 +1,46 @@
+name: Hugo PR Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build_and_deploy_preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: "latest"
+          extended: true
+
+      - name: Set up preview URL
+        id: set_preview_url
+        run: echo "PREVIEW_URL=https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/previews/${{ github.event.pull_request.number }}/" >> $GITHUB_ENV
+
+      - name: Build Hugo site
+        run: hugo --minify --baseURL "${{ env.PREVIEW_URL }}"
+
+      - name: Deploy to GitHub Pages preview
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          destination_dir: previews/${{ github.event.pull_request.number }}
+          # This will create a 'gh-pages' branch if it doesn't exist
+          # and push the content to 'previews/<PR_NUMBER>' within it.
+          publish_branch: gh-pages
+
+      - name: Add comment with preview link
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            🚀 Pull Request Preview available at:
+            ${{ env.PREVIEW_URL }}

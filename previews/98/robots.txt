@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://phuchoang2603.github.io/previews/98/sitemap.xml

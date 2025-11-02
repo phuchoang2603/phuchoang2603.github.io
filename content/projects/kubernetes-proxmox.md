@@ -25,7 +25,7 @@ This project automates the provisioning and configuration of a RKE2 Kubernetes o
 
 [Github repo](https://github.com/phuchoang2603/kubernetes-proxmox)
 
-{{< article link="/posts/terraform-ansible-proxmox-k8s" showSummary=true compactSummary=true >}}
+[Blog posts](https://phuchoang.sbs/posts/terraform-ansible-proxmox-k8s)
 
 Video demo:
 

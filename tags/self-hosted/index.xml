@@ -5,9 +5,7 @@ class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-
 &lt;a class="text-primary-300 dark:text-neutral-700 !no-underline" href="#video-demo" aria-label="Anchor"&gt;#&lt;/a&gt;
 &lt;/span&gt;
 &lt;/h2&gt;
-&lt;div&gt;
-&lt;iframe width="100%" height="480" src="https://www.youtube.com/embed/RgkC246Ul44" title="Automatic manga translation for Suwayomi." frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen&gt;&lt;/iframe&gt;
-&lt;/div&gt;
+&lt;lite-youtube videoid="RgkC246Ul44" playlabel="RgkC246Ul44" params=""&gt;&lt;/lite-youtube&gt;
 &lt;hr&gt;
 &lt;h2 class="relative group"&gt;The Struggle: Why I Needed This
 &lt;div id="the-struggle-why-i-needed-this" class="anchor"&gt;&lt;/div&gt;

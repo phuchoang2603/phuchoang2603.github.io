@@ -1,71 +1,77 @@
-# Sample workflow for building and deploying a Hugo site to GitHub Pages
-name: Deploy Hugo site to Pages
+name: Deploy Hugo Site (PRs & Main)
 
 on:
-  # Runs on pushes targeting the default branch
+  # 1. Run on pushes to main
   push:
     branches: ["main"]
+  # 2. Run on pull requests targeting main
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+# Set permissions
 permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
-# Default to bash
-defaults:
-  run:
-    shell: bash
+  contents: write # To push to gh-pages
+  pull-requests: write # To comment on PRs
 
 jobs:
-  # Build job
-  build:
+  build_and_deploy:
     runs-on: ubuntu-latest
-    env:
-      HUGO_VERSION: 0.151.0
     steps:
-      - name: Install Hugo CLI
-        run: |
-          wget -O ${{ runner.temp }}/hugo.deb https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb \
-          && sudo dpkg -i ${{ runner.temp }}/hugo.deb
-      - name: Install Dart Sass
-        run: sudo snap install dart-sass
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
-          submodules: recursive
-      - name: Setup Pages
-        id: pages
-        uses: actions/configure-pages@v5
-      - name: Install Node.js dependencies
-        run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
-      - name: Build with Hugo
-        env:
-          HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
-          HUGO_ENVIRONMENT: production
-        run: |
-          hugo \
-            --minify \
-            --baseURL "${{ steps.pages.outputs.base_url }}/"
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./public
+          submodules: true
+          fetch-depth: 0
 
-  # Deployment job
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: "latest" # Or "0.151.0" if you need that specific version
+          extended: true
+
+      # --- Dynamically set the BaseURL ---
+      - name: Set up Base URL for PR
+        if: github.event_name == 'pull_request'
+        run: echo "BASE_URL=https://phuchoang.sbs/previews/${{ github.event.pull_request.number }}/" >> $GITHUB_ENV
+
+      - name: Set up Base URL for Main
+        if: github.event_name == 'push'
+        run: echo "BASE_URL=https://phuchoang.sbs/" >> $GITHUB_ENV
+
+      - name: Build Hugo site
+        run: hugo --minify --baseURL "${{ env.BASE_URL }}"
+
+      # --- Deployment Logic ---
+
+      - name: Deploy to Main (Root)
+        # Only run this step if we are on the 'main' branch
+        if: github.event_name == 'push'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          destination_dir: . # Deploy to the root of the branch
+          publish_branch: gh-pages
+          keep_files: true # IMPORTANT: Do not delete the 'previews' folder
+
+      - name: Deploy to PR (Preview)
+        # Only run this step if it's a pull request
+        if: github.event_name == 'pull_request'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          destination_dir: previews/${{ github.event.pull_request.number }}
+          publish_branch: gh-pages
+          # keep_files: false (default) is fine here, it will clean the preview folder
+
+      - name: Add comment with preview link
+        # Only run this step if it's a pull request
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            🚀 Pull Request Preview available at:
+            ${{ env.BASE_URL }}

@@ -11,7 +11,6 @@ tags:
 draft: false
 featureimage: https://i.ibb.co/chTK0Djn/image.png
 ---
-
 This is my story of how I attempt to build an AI-powered pipeline for ArXiv papers. It was a journey that started with a cool idea about AI agents and ended with me wrestling Docker, n8n, and Python into submission.
 
 {{< github repo="phuchoang2603/sis-arxiv-vad-papers" showThumbnail=true >}}
@@ -46,12 +45,11 @@ ENTRYPOINT ["python", "-m", "arxiv_mcp_server"]
 With the server built, I set up a custom `catalog.yaml` above to define my tools and hooked it all into `docker-compose.yml`. A custom catalog is essentially your own personal, self-contained list of MCP servers. Instead of relying on a public registry, you define everything about the servers you want to use in a single `catalog.yaml` file.
 
 The process is straightforward:
-
 1. **Create `catalog.yaml`**: You define one or more servers in a YAML file following the specified format.
 2. **Mount the Catalog**: In your `docker-compose.yml` file, you use a **volume mount** to make your local `catalog.yaml` file available inside the gateway container.
-   - `volumes: - ./catalog.yaml:/mcp/catalog.yaml`
+    - `volumes: - ./catalog.yaml:/mcp/catalog.yaml`
 3. **Tell the Gateway to Use It**: You use `command` arguments to point the gateway to your mounted catalog file and specify which server(s) from that file you want to activate.
-   - `command: - --catalog=/mcp/catalog.yaml - --servers=duckduckgo`
+    - `command: - --catalog=/mcp/catalog.yaml - --servers=duckduckgo`
 
 ```yaml
 registry:
@@ -121,50 +119,51 @@ It worked\! The agent called the `search_papers` tool.
 
 Then, I hit the first major wall. The agent would `download_paper`, and on the very next step, the `read_paper` tool would fail.
 
-**The Problem:** The MCP gateway, by default, is _stateless_. It spins up a brand new container for _every single tool call_. The container that downloaded the paper was instantly destroyed, so the new container for `read_paper` had no idea the file existed. Bruh.
+**The Problem:** The MCP gateway, by default, is *stateless*. It spins up a brand new container for *every single tool call*. The container that downloaded the paper was instantly destroyed, so the new container for `read_paper` had no idea the file existed. Bruh.
 
 ### The "Static" Mode Saga
 
-The fix was `static=true` mode. This tells the gateway to connect to an _already-running_ server container. I dutifully refactored my `docker-compose.yml` to have `mcp-gateway` depend on a long-running `mcp-arxiv-server`.
+The fix was `static=true` mode. This tells the gateway to connect to an *already-running* server container. I dutifully refactored my `docker-compose.yml` to have `mcp-gateway` depend on a long-running `mcp-arxiv-server`.
 
 ```yaml
-mcp-gateway:
-  image: docker/mcp-gateway
-  hostname: mcp-gateway
-  ports:
-    - "8811:8811"
-  command:
-    - --servers=arxiv-mcp-server,duckduckgo
-    - --static=true
-    - --transport=streaming
-    - --port=8811
-  depends_on:
-    - mcp-arxiv-server
+  mcp-gateway:
+    image: docker/mcp-gateway
+    hostname: mcp-gateway
+    ports:
+      - "8811:8811"
+    command:
+      - --servers=arxiv-mcp-server,duckduckgo
+      - --static=true
+      - --transport=streaming
+      - --port=8811
+    depends_on:
+      - mcp-arxiv-server
 
-mcp-arxiv-server:
-  image: mcp/arxiv-mcp-server
-  entrypoint:
-    ["/docker-mcp/misc/docker-mcp-bridge", "python", "-m", "arxiv_mcp_server"]
-  init: true
-  labels:
-    - docker-mcp=true
-    - docker-mcp-tool-type=mcp
-    - docker-mcp-name=arxiv-mcp-server
-    - docker-mcp-transport=stdio
-  volumes:
-    - type: image
-      source: docker/mcp-gateway
-      target: /docker-mcp
-    - ${SHARED_FOLDER}:/app/papers
+  mcp-arxiv-server:
+    image: mcp/arxiv-mcp-server
+    entrypoint:
+      ["/docker-mcp/misc/docker-mcp-bridge", "python", "-m", "arxiv_mcp_server"]
+    init: true
+    labels:
+      - docker-mcp=true
+      - docker-mcp-tool-type=mcp
+      - docker-mcp-name=arxiv-mcp-server
+      - docker-mcp-transport=stdio
+    volumes:
+      - type: image
+        source: docker/mcp-gateway
+        target: /docker-mcp
+      - ${SHARED_FOLDER}:/app/papers
+
 ```
 
 It failed.
 
-I tried the _exact same setup_ with the official `duckduckgo` server, and it worked perfectly. My ArXiv server? Nothing. Just network errors.
+I tried the *exact same setup* with the official `duckduckgo` server, and it worked perfectly. My ArXiv server? Nothing. Just network errors.
 
 ![](https://i.ibb.co/7dg88QxW/image.png)
 
-I was losing my mind, so I [filed a GitHub issue](https://github.com/docker/mcp-gateway/issues/154). A collaborator saved me. Turns out, the gateway _auto-prefixes_ the server name with `mcp-` to find the service.
+I was losing my mind, so I [filed a GitHub issue](https://github.com/docker/mcp-gateway/issues/154). A collaborator saved me. Turns out, the gateway *auto-prefixes* the server name with `mcp-` to find the service.
 
 My service was named `mcp-arxiv-server`. The gateway was looking for `mcp-mcp-arxiv-server`.
 
@@ -182,9 +181,9 @@ I needed a good PDF-to-Markdown converter. LlamaParse looked amazing, but you ha
 
 ### Configuring `docling-serve`
 
-This took _way_ longer than I expected. `docling-serve` is great, but it needs to download all its models before it can run. I ended up creating a two-stage setup in my `docker-compose.yml`:
+This took *way* longer than I expected. `docling-serve` is great, but it needs to download all its models before it can run. I ended up creating a two-stage setup in my `docker-compose.yml`:
 
-1.  **`docling-serve-initial`:** A service that runs _once_ (`restart: "no"`) and just runs the download command, saving the models to a shared Docker volume.
+1.  **`docling-serve-initial`:** A service that runs *once* (`restart: "no"`) and just runs the download command, saving the models to a shared Docker volume.
 2.  **`docling-serve`:** The main server. It `depends_on` the `initial` service, mounts that same volume, and reads the pre-downloaded models.
 
 ```yaml
@@ -227,24 +226,25 @@ services:
     depends_on:
       docling-serve-initial:
         condition: service_completed_successfully
+
 ```
 
 First, I tried to get n8n to load all the papers from the `arxiv-existing` folder Lokman sent me. It contained 56 items, and it took a _really_ long time to load. Next, I started poking around the [docling API](https://github.com/docling-project/docling-serve/blob/fa1c5f04f33515de42bc2128cdc62714dc0c6f98/docs/usage.md). Before unleashing it on all 56 papers, I tested it out with just two to see what would actually happen.
 
 I first tried _all_ of the features that `docling` offers:
-
 - `pipeline` (str). The choice of which pipeline to use. Allowed values are `standard` and `vlm`. Defaults to `standard`.
 - `do_table_structure` (bool): If enabled, the table structure will be extracted. Defaults to true.
 - `do_code_enrichment` (bool): If enabled, perform OCR code enrichment. Defaults to false.
 - `do_formula_enrichment` (bool): If enabled, perform formula OCR, return LaTeX code. Defaults to false.
 - `do_picture_classification` (bool): If enabled, classify pictures in documents. Defaults to false.
 - `do_picture_description` (bool): If enabled, describe pictures in documents. Defaults to false.
+    
 
 However, it took a **ridiculous** amount of time and memory to run, and it was prone to crashing. After digging around, I found out that other people were hitting this same [issue](https://github.com/docling-project/docling/issues/871). The formula and code awareness models, while small, will apparently eat your _entire_ GPU VRAM. So I had to turn off all the enrichments.
 
 ## Part 3: The n8n Orchestration Nightmare
 
-This was my first time _really_ using n8n for a complex batch job, and honestly, it was frustrating.
+This was my first time *really* using n8n for a complex batch job, and honestly, it was frustrating.
 
 **Problem 1: The ZIP File**
 `docling-serve` returns a ZIP file with `paper.md` and an `artifacts/` folder. n8n's "Decompress" node doesn't output a nice array you can loop over. It's... not an array. It's a single item with multiple binary properties. After digging through forums, I found you have to use a custom Code node to manually split it:
@@ -254,12 +254,12 @@ This was my first time _really_ using n8n for a complex batch job, and honestly,
 // into multiple items, each with one binary file.
 let results = [];
 for (item of items) {
-  for (key of Object.keys(item.binary)) {
-    results.push({
-      json: { fileName: item.binary[key].fileName },
-      binary: { data: item.binary[key] },
-    });
-  }
+    for (key of Object.keys(item.binary)) {
+        results.push({
+            json: { fileName: item.binary[key].fileName },
+            binary: { data: item.binary[key] }
+        });
+    }
 }
 return results;
 ```
@@ -272,15 +272,15 @@ My next instinct was one giant workflow:
 3.  (Nested) Get the ZIP, run the code above.
 4.  (Nested) Loop over the resulting files to save them.
 
-This failed _miserably_. Data from the first paper's loop would "bleed" into the second paper's execution. It would just process the first paper over and over.
+This failed *miserably*. Data from the first paper's loop would "bleed" into the second paper's execution. It would just process the first paper over and over.
 
 **The Solution: Master/Child Workflows**
 The only stable solution was to refactor:
 
 ![](https://i.ibb.co/gZdbscGw/image.png)
 
-1.  **Master Workflow:** Its _only_ job is to loop through the 50 PDFs and call a "Child" workflow _once per paper_.
-2.  **Child Workflow:** Receives _one_ paper, calls Docling, saves the files, and finishes.
+1.  **Master Workflow:** Its *only* job is to loop through the 50 PDFs and call a "Child" workflow *once per paper*.
+2.  **Child Workflow:** Receives *one* paper, calls Docling, saves the files, and finishes.
 
 This isolated the execution and finally worked. I also created a `merge` node to filter out previously processed items, in case I wanted to run the workflow again in the future.
 
@@ -373,17 +373,23 @@ I briefly tried `pdfVector` because of its JSON schema feature. Then I saw the p
       "description": "Publication date of the paper (YYYY-MM-DD)"
     }
   },
-  "required": ["title", "type", "categories", "date", "summary"],
+  "required": [
+    "title",
+    "type",
+    "categories",
+    "date",
+    "summary"
+  ],
   "additionalProperties": false
 }
 ```
 
 So I decided to roll my own json extractor on n8n. I added an "Information Extractor" node to my n8n workflow, using the JSON schema I'd built. Again, the local model disappointed me with inferior results.
 
-- **Local `qwen3-4b`:** Failed to call the tool.
-  ![](https://i.ibb.co/Myj1vsgR/image.png)
-- **OpenRouter `gpt-4.1-nano`:** Worked perfectly.
-  ![](https://i.ibb.co/xt4G92pq/image.png)
+  - **Local `qwen3-4b`:** Failed to call the tool.
+![](https://i.ibb.co/Myj1vsgR/image.png) 
+  - **OpenRouter `gpt-4.1-nano`:** Worked perfectly.
+![](https://i.ibb.co/xt4G92pq/image.png)
 
 The final nail in the n8n-coffin came when I tried to set up my Hugo site. To make images work, Hugo needs a "Page Bundle" structure:
 
@@ -421,11 +427,9 @@ Here's the new flow:
 7.  The script moves the original PDF to a `done` folder.
 
 {{< raw >}}
-
 <div>
 <iframe width="100%" height="480" src="https://www.youtube.com/embed/ytl1deWrZKI?si=RyuOQlYNeZXM318P" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </div>
 {{< /raw >}}
 
 This journey was... a lot. But the final system is clean, robust, and a perfect example of using the right tool for the right job—even if it takes a few frustrating detours to find it.
-

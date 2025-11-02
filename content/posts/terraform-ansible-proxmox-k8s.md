@@ -29,12 +29,7 @@ If you want the detailed documentation, check this instead:
 
 Demo video:
 
-
-{{< raw >}}
-  <div>
-<iframe width="100%" height="480" src="https://www.youtube.com/embed/Ao6IPSmUFcE?si=LKiXbAvKrC4YbM1D" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-  </div>
-{{< /raw >}}
+{{< youtubeLite id="Ao6IPSmUFcE" label="Video demo" >}}
 
 ---
 

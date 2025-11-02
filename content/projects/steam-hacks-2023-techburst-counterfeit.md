@@ -12,7 +12,7 @@ featureimage: https://i.ibb.co/KjcCfpzF/image.png
 ---
 This is my product when participating in the STEAM Hacks 2023 competition. If you’re interested in delving deeper into the backstory and my journey throughout the competition, you can find the comprehensive details right here.
 
-https://phuchoang.sbs/hackathon/my-steam-hacks-2023-experience/
+https://phuchoang.sbs/posts/hackathon-steam-hacks-2023/
 
 ## Overview of the main application
 ### 1. Current features:
@@ -28,7 +28,7 @@ https://phuchoang.sbs/hackathon/my-steam-hacks-2023-experience/
 - [ ] Assess product quality based on images, reviews, descriptions, etc.
 - [ ] Allow users to train or utilize the categorization model.
 
-https://github.com/phuchoang2603/techburst-counterfeit
+{{< github repo="phuchoang2603/techburst-counterfeit" showThumbnail=true >}}
 
 ## Simplifying Counterfeit Product Verification: A Journey of Implementing User-Friendly Solutions
 In an era where counterfeit products flood the market, safeguarding consumers from purchasing fraudulent items has become a pressing concern. As an individual passionate about leveraging technology to combat this issue, my recent venture involved implementing an application that enables users to easily verify the authenticity of products. The process, although challenging, led to the development of a robust solution that empowers users to make informed purchasing decisions.
@@ -52,11 +52,7 @@ The deployment phase, while initially daunting, became more manageable with the 
 
 ## Existing Limitations and Strategies for Optimization
 
-{{< raw >}}
-  <div>
-<iframe width="100%" height="480"  src="https://www.youtube.com/embed/saBv1Hr-ffc" title="techburst-test" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-  </div>
-{{< /raw >}}
+{{< youtubeLite id="saBv1Hr-ffc" label="Video demo" >}}
 
 Despite the successful implementation, certain limitations persist. The machine learning model's inability to recognize products with 100% accuracy remains a challenge. Additionally, scaling the model to encompass a wider range of products proves challenging due to constraints in data resources.
 
@@ -70,11 +66,7 @@ To address these limitations and optimize the user experience, a novel approach 
 
 Here's a video demonstration of the app.
 
-{{< raw >}}
-  <div>
-<iframe width="100%" height="480"  src="https://www.youtube.com/embed/A47P2lWPlN4" title="Techburst Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-  </div>
-{{< /raw >}}
+{{< youtubeLite id="A47P2lWPlN4" label="Video demo" >}}
 
 ## The Journey Continues
 As the application evolves, the aim remains to refine the user experience and enhance the application's capabilities. By continually addressing limitations and leveraging cutting-edge technologies, the vision of creating a user-friendly and effective counterfeit product verification solution inches closer to reality. Through perseverance and innovation, the battle against counterfeit products can be better equipped, allowing consumers to shop with confidence and trust.

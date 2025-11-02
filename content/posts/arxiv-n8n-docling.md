@@ -426,10 +426,6 @@ Here's the new flow:
 6.  **Python** receives the JSON, formats it with `ruamel.yaml`, and writes it as front matter to the top of the `index.md`.
 7.  The script moves the original PDF to a `done` folder.
 
-{{< raw >}}
-<div>
-<iframe width="100%" height="480" src="https://www.youtube.com/embed/ytl1deWrZKI?si=RyuOQlYNeZXM318P" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-</div>
-{{< /raw >}}
+{{< youtubeLite id="ytl1deWrZKI" label="Video demo" >}}
 
 This journey was... a lot. But the final system is clean, robust, and a perfect example of using the right tool for the right job—even if it takes a few frustrating detours to find it.

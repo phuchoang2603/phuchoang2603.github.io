@@ -1,5 +1,5 @@
 ---
-title: "On-Premise 101 (part 1): Building a 3-Node Proxmox Cluster"
+title: "On-Premise 101 (Part 1): Building a 3-Node Cluster"
 description:
 date: 2025-10-28
 tags:

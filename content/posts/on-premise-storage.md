@@ -205,13 +205,13 @@ Below is a showcase where I can watch a movie on both my laptop and phone by jus
 ![](https://i.ibb.co/spK8jQqJ/IMG-0168.jpg)
 ![](https://i.ibb.co/7tjCnZmn/IMG-0170.jpg)
 
-### FTP (for Edge Devices like PS4 and Nintendo Switch)
+### FTP for edge devices like PS4 and Nintendo Switch
 
 For devices that don't support `NFS` or `SMB` (like my hacked PS4 and Nintendo Switch), no problem. `TrueNAS` also offers the `FTP` protocol. I use it to install games on my console. I can easily download a game via `qbittorrent` (running on the NAS) and then connect the device to my FTP server to transfer the file.
 
 ![](https://i.ibb.co/zWTbTZTX/IMG-0916.jpg)
 
-## Additional apps that you can equip with your nas
+## Additional quality-of-life applications
 Remember when I said it's "best practice" to separate compute from storage? Well, your life will be much easier if you install a _few_ lightweight, storage-related applications on your NAS.
 
 ### Download clients

@@ -1,5 +1,5 @@
 ---
-title: "On-Premise 101 (part 2): Proxmox, the 'Glue' for My Homelab"
+title: 'On-Premise 101 (Part 2): Proxmox, the "Glue" for My Homelab'
 description:
 date: 2025-10-30
 tags:

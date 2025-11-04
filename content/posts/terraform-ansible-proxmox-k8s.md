@@ -25,7 +25,8 @@ That’s the path I chose. Setting up Kubernetes sounded straightforward — but
 And so, over the past couple of days, I dove deep into trying to set up my own **bare-metal Kubernetes cluster on Proxmox using Terraform and Ansible**. In this post, I want to share my experience — not as a fancy tutorial, but more like a overconfident student who struggled, googled like crazy, and finally made it work.
 
 If you want the detailed documentation, check this instead:  
-👉 [https://github.com/phuchoang2603/kubernetes-proxmox](https://github.com/phuchoang2603/kubernetes-proxmox)
+
+{{< github repo="phuchoang2603/kubernetes-proxmox" showThumbnail=true >}}
 
 Demo video:
 

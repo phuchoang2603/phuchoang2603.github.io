@@ -124,7 +124,7 @@ Now that the physical foundation is laid, it's time to build on top of it. In th
 
 1. Creating a ZFS-based NAS: How I'm using **TrueNAS** (or Proxmox's built-in ZFS) to manage my 6TB of storage.
     
-2. Spinning up the Kubernetes Cluster: We'll provision the VMs that will form our 3-node k8s cluster using **Terraform** and **Ansible** with [this project](https://phuchoang.sbs/projects/kubernetes-proxmox/).
+2. Spinning up the Kubernetes Cluster: We'll provision the VMs that will form our 3-node k8s cluster using **Terraform** and **Ansible**.
     
 3. Automating Everything with GitOps: Finally, I'll show you how I use **ArgoCD** to automatically deploy and manage all my applications (Jellyfin, Frigate, and more) on Kubernetes.
     

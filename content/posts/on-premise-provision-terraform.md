@@ -1,5 +1,5 @@
 ---
-title: "On-Premise 101 (Part 4): Automating Proxmox with Terraform and Cloud-Init"
+title: "On-Premise 101 (Part 4): Automating 12 VMs creation on Proxmox with Terraform"
 description:
 date: 2025-11-06
 tags:

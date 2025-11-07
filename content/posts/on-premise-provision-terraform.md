@@ -25,7 +25,7 @@ This post is Part 1 of our `Kubernetes` build, focusing on how I use `Terraform`
 
 Before `Terraform`, and before the "cloud" even existed, people deployed infrastructure by manually creating VMs with repeated configurations (CPU, RAM, network, firewall) and then SSH into each machine to run commands,or if they were fancy, a bash script. This did the job, but doing it manually was error-prone, time-consuming, and a nightmare to document.
 
-The "cloud" was born to help solve this: it's still someone's computer, but those computers are now abstracted with many services on top, so we no longer need to build the infrastructure ourselves and can create VMs faster. However, we still often need to manually log in to a website and create VMs through a clunky UI.
+The "cloud" was born to help solve this: it's still someone's computer, but those computers are now abstracted with many services on top, so we no longer need to build the infrastructure ourselves and can create VMs faster. Heck, we might not need to create VMs; instead, we just need to write a Dockerfile, or even just the function of the code, to get it deployed directly. However, we still often need to manually log in to a website and create VMs through a clunky UI.
 
 That's where `Terraform` comes in. It's an open-source, **Infrastructure as Code (IaC)** tool from `HashiCorp` that lets you define and provision infrastructure using a declarative configuration language called `HCL`. It allows you to build, change, and manage infrastructure safely and efficiently. By writing code to describe your desired end state, `Terraform` automates the process of creating, updating, and destroying infrastructure, reducing manual effort and improving consistency.
 

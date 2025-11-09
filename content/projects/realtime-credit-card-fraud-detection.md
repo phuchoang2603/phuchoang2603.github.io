@@ -10,6 +10,7 @@ tags:
   - grafana
   - prometheus
   - python
+  - cloud
 draft: false
 featureimage: https://github.com/phuchoang2603/realtime-credit-card-fraud-detection/raw/main/deployments/images/mlops1-arch.excalidraw.svg
 externalUrl: https://github.com/phuchoang2603/realtime-credit-card-fraud-detection

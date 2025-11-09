@@ -6,6 +6,7 @@ tags:
   - terraform
   - proxmox
   - kubernetes
+  - cloud
 draft: false
 featureimage: https://i.ibb.co/hJ52zRfm/image.png
 series:

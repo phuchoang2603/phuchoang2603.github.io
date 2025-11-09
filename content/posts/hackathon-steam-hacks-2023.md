@@ -3,7 +3,9 @@ title: My STEAM Hacks 2023 experience
 date: 2023-10-20
 tags:
   - hackathon
-description: 
+  - cloud
+  - python
+description:
 draft: false
 featureimage: https://i.imgur.com/E17gMsG.jpg
 ---
@@ -42,16 +44,49 @@ The initial meeting went smoothly as we all introduced ourselves and comfortably
 
 You might be wondering, is that all? Why were you so easily compromised? Well, I did attempt to negotiate with her. However, as mentioned earlier, choosing the idea of creating a marketplace for refurbished devices would result in my team being disqualified from the STEAM Hacks competition if they discovered any correlation or signs of idea copying from my Samsung product last year. On another note, my primary motivation for participating in this competition was not solely to complete my Samsung product but rather to acquire and expand my knowledge and skills.
 
-## On the development process
+## Building the entire application myself
 Wow, what a nightmare that was. I can't even begin to describe how unproductive the environment was compared to our typically smooth and comfortable team discussions. I don't want to point fingers or be too hard on myself, but it's clear that none of the Hacker members on our team were pulling their weight. It's not entirely their fault though; they excel in competitive coding, but they weren't adequately prepared for web development or a hackathon like this. So, I found myself having to join them in tackling the code development.
 
 Furthermore, our team was currently facing a conflicting idea with our leader regarding the counterfeit product verification system. Unlike other student projects that typically involve education or mental health, this idea feels challenging for us to create something meaningful. Initially, our leader proposed using AI to detect fake patterns or incorrect labels, but our team lacks the competence in developing AI-related features. Additionally, implementing such a system seemed impossible and unproductive due to the vast variety of products and their unique fake versions. Moreover, there are also concerns about implementation costs and potential returns.
 
-Well, turns out, every cloud has a silver lining. Firstly, despite my limited technical knowledge, I embraced the opportunity to learn backend development on my own, driven by a strong determination and purpose. This made me feel alive and empowered. Specifically, I was fortunate to have access to the [FlutterFlow](https://flutterflow.io/) Education program, which enabled me to quickly learn and utilize their user-friendly software for creating meaningful applications. This greatly reduced our front-end development time and expanded my knowledge of this powerful tool. Furthermore, I acquired proficiency in Flask to develop an API backend application that automatically serves ML models trained through the [Teachable Machine](https://teachablemachine.withgoogle.com/) platform. This saved me the tedious task of manually researching and collecting data for training models. In short, this challenging experience has taught me invaluable skills and knowledge.
+Well, turns out, every cloud has a silver lining. Firstly, despite my limited technical knowledge at that time, I embraced the opportunity to learn backend development on my own, driven by a strong determination and purpose. This made me feel alive and empowered. Specifically, I was fortunate to have access to the [FlutterFlow](https://flutterflow.io/) Education program, which enabled me to quickly learn and utilize their user-friendly software for creating meaningful applications. This greatly reduced our front-end development time and expanded my knowledge of this powerful tool. Furthermore, I acquired proficiency in Flask to develop an API backend application that automatically serves ML models trained through the [Teachable Machine](https://teachablemachine.withgoogle.com/) platform. This saved me the tedious task of manually researching and collecting data for training models. 
 
-Coming back to the idea conflicting issue, because I initially had doubts about the leader's counterfeit verification concept, I decided to develop the refurbished marketplace feature alongside it. However, I also noticed her dedication and effort towards this idea, despite its nearly impossible implementation. So I had to come all the way to redevelop the application. Finally, on the last day, things became even more intense than before as we submitted our application just five minutes before the deadline. Although there were still flaws and room for improvement, we managed to qualify for the next round - the Hacking Day...
+However, it is easier planning than implementing.
+
+## Exploring the Implementation Process
+During the initial stages, I explored various potential implementations, each presenting its own set of hurdles. I want to make an Android application which have the Computer Vision feature on it. Initially, I came up with the idea of hosting a *.Tflite* model offline using Android Studio, which seemed [promising](https://www.youtube.com/watch?v=G0h5DAcvz6U), but the dependency management and debugging complexities proved daunting. Despite investing countless hours to resolve library errors, achieving a successful attempt remained elusive. Similarly, attempting to host a *Transformer* model on HuggingFace appeared overly complex, demanding a deep understanding of Transformer and Tensorflow intricacies.
+
+However, the breakthrough emerged with the decision to develop a Flask backend for a REST API server, specifically tailored to handle Teachable Machine exported models. This decision, inspired by a helpful tutorial I stumbled upon, paved the way for a more feasible and practical approach.
+
+Link of the tutorial: https://sogalanbat.medium.com/custom-api-for-keras-model-using-cloud-run-9d367a2ea5e8
+
+## Overcoming Challenges and Constraints
+Finding a way to accomplish my goal was a challenge, but I persevered. However, when the time came to put my plan into action, I realized it was much more difficult than anticipated. At the outset, my lack of prior knowledge in Machine Learning Model and Python Flask REST API posed a steep learning curve. Existing tutorials primarily focused on deploying entire Flask web apps or Tensorflow models, which didn't directly address the Teachable Machine's unique requirements.
+
+Furthermore, wrestling with outdated Python packages presented a considerable setback. Efforts to convert image URLs directly to tensor files proved unreliable, often yielding inaccurate results due to the limitations in handling diverse image file types. However, persistence and patience ultimately led me to discover a workaround. I learned how to download image URLs directly and convert them to the compatible Keras format, effectively resolving the earlier challenges.
+
+The deployment phase, while initially daunting, became more manageable with the aid of a comprehensible Dockerfile tutorial. Thanks to this newfound understanding, I successfully deployed the application on Google Cloud Platform (GCP). 
+
+{{< youtubeLite id="saBv1Hr-ffc" label="Video demo" >}}
+
+Despite the successful implementation, certain limitations persist. The machine learning model's inability to recognize products with 100% accuracy remains a challenge. Additionally, scaling the model to encompass a wider range of products proves challenging due to constraints in data resources.
+
+![](https://i.imgur.com/xXAIIlM.png)
+*The application cannot detect these physical patterns on real and fake products.*
+
+![](https://i.imgur.com/lehaRi2.png)
+*Although it achieved a 70% success rate after conducting 400 tests, relying solely on this mechanism may not be deemed reliable.*
+
+To address these limitations and optimize the user experience, a novel approach has been conceived. Instead of relying solely on the machine learning model to identify differences between fake and authentic products, the application will facilitate user interaction with informative content. Users will receive guidance on how to physically examine the product, potentially by scanning barcodes or utilizing Optical Character Recognition (OCR) to decipher product numbers. The extracted data will then be passed through ChatGPT (LangChain) to source relevant internet pages based on credibility and popularity. A summarized report will then be relayed back to the user, empowering them to make informed decisions.
+
+Here's a video demonstration of the app.
+
+{{< youtubeLite id="A47P2lWPlN4" label="Video demo" >}}
+
+Finally, on the last day, things became even more intense than before as we submitted our application just five minutes before the deadline. Although there were still flaws and room for improvement, we managed to qualify for the next round - the Hacking Day...
 
 ![](https://i.imgur.com/j8VNQZP.png)
+
 
 ## Final revision & new trajectory
 Entering the final round was unexpected for us. Our product was only halfway developed and didn't efficiently solve our problems. When we received the results for the second round at midnight, we celebrated together briefly before diving into a meeting for planning and improvement. During this meeting, we had a tense debate as Chau and I wanted to continue finishing the project for the learning experience, while Linh and Huy would only participate if we had a chance of winning a major award. After much discussion, we agreed to aim for the Pitching Award.

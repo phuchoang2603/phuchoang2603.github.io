@@ -9,10 +9,6 @@ description:
 draft: false
 featureimage: https://i.imgur.com/E17gMsG.jpg
 ---
-*If you want to learn more about the technical details of how I built the app, please read the article here*
-
-
-
 Today, I want to share my experience with you about the project I worked on during the Steam Hacks 2023 competition. Although my team did not win any major awards for this project, it was an incredible learning opportunity for me, particularly in terms of coding. Moreover, I also gained valuable insights into the collaborative process through working with my amazing new friend from Son La - Minh Chau.
 
 ## Background information about STEAM Hacks 
@@ -45,7 +41,7 @@ The initial meeting went smoothly as we all introduced ourselves and comfortably
 You might be wondering, is that all? Why were you so easily compromised? Well, I did attempt to negotiate with her. However, as mentioned earlier, choosing the idea of creating a marketplace for refurbished devices would result in my team being disqualified from the STEAM Hacks competition if they discovered any correlation or signs of idea copying from my Samsung product last year. On another note, my primary motivation for participating in this competition was not solely to complete my Samsung product but rather to acquire and expand my knowledge and skills.
 
 ## Building the entire application myself
-Wow, what a nightmare that was. I can't even begin to describe how unproductive the environment was compared to our typically smooth and comfortable team discussions. I don't want to point fingers or be too hard on myself, but it's clear that none of the Hacker members on our team were pulling their weight. It's not entirely their fault though; they excel in competitive coding, but they weren't adequately prepared for web development or a hackathon like this. So, I found myself having to join them in tackling the code development.
+I don't want to point fingers or be too hard on myself, but it's clear that none of the Hacker members on our team were pulling their weight. It's not entirely their fault though; they excel in competitive coding, but they weren't adequately prepared for web development or a hackathon like this. So, I found myself having to join them in tackling the code development.
 
 Furthermore, our team was currently facing a conflicting idea with our leader regarding the counterfeit product verification system. Unlike other student projects that typically involve education or mental health, this idea feels challenging for us to create something meaningful. Initially, our leader proposed using AI to detect fake patterns or incorrect labels, but our team lacks the competence in developing AI-related features. Additionally, implementing such a system seemed impossible and unproductive due to the vast variety of products and their unique fake versions. Moreover, there are also concerns about implementation costs and potential returns.
 
@@ -69,7 +65,7 @@ The deployment phase, while initially daunting, became more manageable with the 
 
 {{< youtubeLite id="saBv1Hr-ffc" label="Video demo" >}}
 
-Despite the successful implementation, certain limitations persist. The machine learning model's inability to recognize products with 100% accuracy remains a challenge. Additionally, scaling the model to encompass a wider range of products proves challenging due to constraints in data resources.
+Despite the successful implementation, certain limitations persist. The machine learning model's inability to recognize products with 100% accuracy remains a challenge. Additionally, scaling the model to encompass a wider range of products proves challenging due to constraints in data resources. Although there were still flaws and room for improvement, we managed to qualify for the next round - the Hacking Day...
 
 ![](https://i.imgur.com/xXAIIlM.png)
 *The application cannot detect these physical patterns on real and fake products.*
@@ -77,24 +73,20 @@ Despite the successful implementation, certain limitations persist. The machine 
 ![](https://i.imgur.com/lehaRi2.png)
 *Although it achieved a 70% success rate after conducting 400 tests, relying solely on this mechanism may not be deemed reliable.*
 
+![](https://i.imgur.com/j8VNQZP.png)
+*Overview of our app before the final round*
+
+## Final revision and New trajectory
+Entering the final round was unexpected for all of us. Still, we have to figure something out to improve the process of verifying counterfeit products. 
+
 To address these limitations and optimize the user experience, a novel approach has been conceived. Instead of relying solely on the machine learning model to identify differences between fake and authentic products, the application will facilitate user interaction with informative content. Users will receive guidance on how to physically examine the product, potentially by scanning barcodes or utilizing Optical Character Recognition (OCR) to decipher product numbers. The extracted data will then be passed through ChatGPT (LangChain) to source relevant internet pages based on credibility and popularity. A summarized report will then be relayed back to the user, empowering them to make informed decisions.
 
-Here's a video demonstration of the app.
-
-{{< youtubeLite id="A47P2lWPlN4" label="Video demo" >}}
-
-Finally, on the last day, things became even more intense than before as we submitted our application just five minutes before the deadline. Although there were still flaws and room for improvement, we managed to qualify for the next round - the Hacking Day...
-
-![](https://i.imgur.com/j8VNQZP.png)
-
-
-## Final revision & new trajectory
-Entering the final round was unexpected for us. Our product was only halfway developed and didn't efficiently solve our problems. When we received the results for the second round at midnight, we celebrated together briefly before diving into a meeting for planning and improvement. During this meeting, we had a tense debate as Chau and I wanted to continue finishing the project for the learning experience, while Linh and Huy would only participate if we had a chance of winning a major award. After much discussion, we agreed to aim for the Pitching Award.
-
-I was extremely busy during this time as I had to focus on my IELTS practice and essay writing. Additionally, I indulged in my habit of tinkering with tech devices and took the opportunity to develop my own server using an old case my mom had brought home. However, returning to the topic of STEAM Hacks, after resolving our conflicts, we came up with a new idea to improve the process of verifying counterfeit products. This involved implementing barcode scanning and utilizing NLP instructions. We discovered that solely using images to identify fake products was not as effective as incorporating physical interactions such as smell or embossed marks. This idea also stemmed from my recent knowledge about NLP and [LangChain](https://www.langchain.com/) that I coincidentally learned about just a few weeks ago. And so, without further ado, our journey continues.
-
-Our journey began just three days before the Hacking Day, thanks to my procrastination. The day before the final, we had a meeting scheduled with our counselor and advisor. It was embarrassing because our team had barely finished the final version of our product. However, this gave us an opportunity to ask our advisor important questions regarding the challenges we were currently facing. As I delved deeper into NLP and specifically LangChain, I discovered that it was poorly developed and relied heavily on tokenization. After a lengthy discussion, we also learned some valuable techniques for optimizing it. And in the same day, we were able to complete our underperforming product, making it ready for the presentation scheduled for the following day.
+The day before the final, we had a meeting scheduled with our counselor and advisor. It was embarrassing because our team had barely finished the final version of our product. However, this gave us an opportunity to ask our advisor important questions regarding the challenges we were currently facing. As I delved deeper into NLP and specifically LangChain, I discovered that it was poorly developed and relied heavily on tokenization. After a lengthy discussion, we also learned some valuable techniques for optimizing it. And in the same day, we were able to complete our underperforming product, making it ready for the presentation scheduled for the following day.
 
 On the day of our presentation, nothing out of the ordinary occurred. However, one memorable moment stands out in my mind. Our team made the decision to demonstrate the live usage of our application. Unfortunately, it didn't go as planned and resulted in uproarious laughter from the audience. Despite this setback, we were able to complete the presentation without further complications (although our question and answer session left much to be desired). Although our team did not receive any awards in the competition, we still managed to capture a photo with smiles all around.
 
 ![](https://i.imgur.com/E17gMsG.jpg)
+
+Here's a video demonstration of the app.
+
+{{< youtubeLite id="A47P2lWPlN4" label="Video demo" >}}

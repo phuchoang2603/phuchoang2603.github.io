@@ -16,7 +16,9 @@ I'm the kind of person who will happily spend 10 hours building an automation sc
 
 After covering the foundations of our hypervisor and storage platform, it's time to move on to the most interesting part of this series: provisioning a `Kubernetes` cluster on `Proxmox`. This means creating a bunch of VMs, and I refuse to do that manually.
 
-This post is Part 1 of our `Kubernetes` build, focusing on how I use `Terraform` to create a repeatable, automated, and scalable VMs cluster on Proxmox, all with a single command.
+This post is Part 1 of our `Kubernetes` build, focusing on how I use `Terraform` to create a repeatable, automated, and scalable VMs cluster on Proxmox, all with a single command. If you want to see how this project performs in action, you can watch the video below.
+
+{{< youtubeLite id="IrlKAG5bctk" label="Video demo" >}}
 
 {{< github repo="phuchoang2603/kubernetes-proxmox" showThumbnail=true >}}
 

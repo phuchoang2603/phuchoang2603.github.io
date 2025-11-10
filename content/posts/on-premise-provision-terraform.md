@@ -15,13 +15,13 @@ series_order: 4
 ---
 I'm the kind of person who will happily spend 10 hours building an automation script just to save 10 minutes of manual work every day. If that sounds like you, you're in the right place.
 
-After covering the foundations of our hypervisor and storage platform, it's time to move on to the most interesting part of this series: provisioning a `Kubernetes` cluster on `Proxmox`. This means creating a bunch of VMs, and I refuse to do that manually.
-
-This post is Part 1 of our `Kubernetes` build, focusing on how I use `Terraform` to create a repeatable, automated, and scalable VMs cluster on Proxmox, all with a single command. If you want to see how this project performs in action, you can watch the video below.
-
-{{< youtubeLite id="IrlKAG5bctk" label="Video demo" >}}
+After covering the foundations of our hypervisor and storage platform, it's time to move on to the most interesting part of this series: provisioning a `Kubernetes` cluster on `Proxmox`. This means creating a bunch of VMs, and I refuse to do that manually. Luckily, I have learned `Terraform` and `Ansible` somewhat enough to be able to create this project below to automate it all.
 
 {{< github repo="phuchoang2603/kubernetes-proxmox" showThumbnail=true >}}
+
+This post is first part of my deep dive on the project, focusing on how I use `Terraform` to create a repeatable, automated, and scalable VMs cluster on Proxmox, all with a single command. If you want to see how this project performs in action, you can watch the video below.
+
+{{< youtubeLite id="IrlKAG5bctk" label="Video demo" >}}
 
 ## Why Automate? The Case for IaC with Terraform
 "But what is `Terraform`?" you might ask. Again, we need to consider the core problem it solves to truly appreciate it.

@@ -31,6 +31,6 @@ Alright, enough stories. If you're interested in my professional journey, my ski
 
 {{< raw >}}
   <div>
-<iframe src="https://drive.google.com/file/d/1Mlb4CSPmWlSkPT3ZA4eM8bMzhF89Ve-o/preview" style="width: 100%; min-height: 720px; border: none;" allow="autoplay"></iframe>
+<iframe src="https://drive.google.com/file/d/1lZVNqwXxoQWUyqAsij1ZJINigSVp0CtP/preview" style="width: 100%; min-height: 720px; border: none;" allow="autoplay"></iframe>
   </div>
 {{< /raw >}}

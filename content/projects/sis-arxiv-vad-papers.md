@@ -3,7 +3,7 @@ title: SIS ArXiv VAD Papers
 description:
 date: 2025-11-02
 tags:
-  - language/python
+  - programming/lang/python
 draft: false
 featureimage: https://i.ibb.co/chTK0Djn/image.png
 externalUrl: https://github.com/phuchoang2603/sis-arxiv-vad-papers

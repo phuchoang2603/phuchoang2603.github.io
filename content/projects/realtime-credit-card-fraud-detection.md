@@ -3,13 +3,13 @@ title: Scalable Real-Time Credit Card Fraud Detection System
 description:
 date: 2025-11-06
 tags:
-  - devops/argo-cd
-  - devops/kubernetes
-  - devops/github-actions
-  - devops/terraform
-  - devops/grafana
-  - devops/prometheus
-  - language/python
+  - devops/automation/argo-cd
+  - devops/container/kubernetes
+  - devops/automation/github-actions
+  - devops/automation/terraform
+  - devops/monitoring/grafana
+  - devops/monitoring/prometheus
+  - programming/lang/python
 draft: false
 featureimage: https://github.com/phuchoang2603/realtime-credit-card-fraud-detection/raw/main/deployments/images/mlops1-arch.excalidraw.svg
 externalUrl: https://github.com/phuchoang2603/realtime-credit-card-fraud-detection

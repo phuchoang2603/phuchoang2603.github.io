@@ -3,9 +3,9 @@ title: "Vault (Part 1): HashiCorp Vault for Zero Trust Secrets Management"
 summary:
 date: 2025-11-16
 tags:
-  - security/hashicorp-vault
-  - devops/terraform
-  - devops/proxmox
+  - devops/security/hashicorp-vault
+  - devops/automation/terraform
+  - devops/cloud/proxmox
 draft: false
 series:
   - Hashicorp Vault

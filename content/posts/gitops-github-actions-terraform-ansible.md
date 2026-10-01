@@ -3,11 +3,11 @@ title: "Vault (Part 2): Secure On-Prem Automation with Ephemeral Runners and Tai
 summary:
 date: 2025-11-17
 tags:
-  - security/hashicorp-vault
-  - network/tailscale
-  - devops/github-actions
-  - devops/terraform
-  - devops/ansible
+  - devops/security/hashicorp-vault
+  - network/self-hosted/tailscale
+  - devops/automation/github-actions
+  - devops/automation/terraform
+  - devops/automation/ansible
 draft: false
 series:
   - Hashicorp Vault

@@ -3,9 +3,9 @@ title: "On-Premise 101 (Part 5): From Terraform VMs to a K8s Cluster with Ansibl
 summary:
 date: 2025-11-11
 tags:
-  - devops/ansible
-  - devops/kubernetes
-  - devops/proxmox
+  - devops/automation/ansible
+  - devops/container/kubernetes
+  - devops/cloud/proxmox
 draft: false
 featureimage: https://i.ibb.co/spY06yv4/image.png
 series:

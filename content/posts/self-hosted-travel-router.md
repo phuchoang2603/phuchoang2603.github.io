@@ -3,9 +3,9 @@ title: Accessing a Homelab from a Locked-Down PC with a Travel Router
 description:
 date: 2025-10-20
 tags:
-  - network/tailscale
-  - network/openwrt
-  - devops/self-hosted
+  - network/self-hosted/tailscale
+  - network/self-hosted/openwrt
+  - network/self-hosted
   - network/dns
 draft: false
 featureimage: https://i.ibb.co/hJ9xxbT7/image.png

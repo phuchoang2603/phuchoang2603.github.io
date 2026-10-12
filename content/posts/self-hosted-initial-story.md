@@ -3,9 +3,9 @@ title: "My First Server Was Office Trash: A Self-Hosting Story"
 description:
 date: 2023-08-27
 tags:
-  - devops/self-hosted
-  - devops/proxmox
-  - language/python
+  - network/self-hosted
+  - devops/cloud/proxmox
+  - programming/lang/python
 draft: false
 featureimage: https://i.redd.it/47eryezt0xg91.png
 ---

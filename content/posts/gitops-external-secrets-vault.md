@@ -3,9 +3,9 @@ title: "Vault (Part 4): Dynamic Secrets for Kubernetes Pods with External Secret
 summary:
 date: 2025-11-24
 tags:
-  - security/hashicorp-vault
-  - devops/kubernetes
-  - security/external-secrets
+  - devops/security/hashicorp-vault
+  - devops/container/kubernetes
+  - devops/security/external-secrets
 draft: false
 series:
   - Hashicorp Vault

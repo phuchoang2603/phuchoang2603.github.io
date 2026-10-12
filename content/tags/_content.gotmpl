@@ -1,0 +1,30 @@
+{{/* Generate missing parent tag pages without changing article front matter.
+  This file is maintained in Obsidian and synced into Hugo's content/tags/. */}}
+{{ $tags := slice }}
+{{ range resources.Match "tag-tree-source/**" }}
+  {{ if eq (path.Ext .Name) ".md" }}
+    {{ $tags = $tags | append (partial "tag-tree/source-tags.html" .Content) }}
+  {{ end }}
+{{ end }}
+{{ $explicit := newScratch }}
+{{ $parents := newScratch }}
+{{ range $tags }}
+  {{ $tag := lower . }}
+  {{ $explicit.Set $tag true }}
+  {{ $parts := split $tag "/" }}
+  {{ $prefix := "" }}
+  {{ range $index, $part := $parts }}
+    {{ if $prefix }}{{ $prefix = printf "%s/%s" $prefix $part }}{{ else }}{{ $prefix = $part }}{{ end }}
+    {{ if lt $index (sub (len $parts) 1) }}{{ $parents.Set $prefix true }}{{ end }}
+  {{ end }}
+{{ end }}
+{{ range $prefix, $_ := $parents.Values }}
+  {{ if not ($explicit.Get $prefix) }}
+    {{ $.AddPage (dict
+      "kind" "term"
+      "path" $prefix
+      "title" $prefix
+      "params" (dict "tagTreePath" $prefix)
+    ) }}
+  {{ end }}
+{{ end }}

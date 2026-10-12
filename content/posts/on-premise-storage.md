@@ -3,7 +3,7 @@ title: 'On-Premise 101 (Part 3): My "Fearless" NAS Build with Virtualized TrueNA
 description:
 date: 2025-11-02
 tags:
-  - devops/proxmox
+  - devops/cloud/proxmox
 draft: false
 featureimage: https://i.ibb.co/DPMvgp1d/image.png
 series:

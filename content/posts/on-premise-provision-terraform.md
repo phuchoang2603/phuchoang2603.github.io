@@ -3,9 +3,9 @@ title: "On-Premise 101 (Part 4): Automating 12 VMs creation on Proxmox with Terr
 description:
 date: 2025-11-06
 tags:
-  - devops/terraform
-  - devops/proxmox
-  - devops/kubernetes
+  - devops/automation/terraform
+  - devops/cloud/proxmox
+  - devops/container/kubernetes
 draft: false
 featureimage: https://i.ibb.co/hJ52zRfm/image.png
 series:

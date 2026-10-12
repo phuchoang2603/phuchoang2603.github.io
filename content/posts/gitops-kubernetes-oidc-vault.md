@@ -3,10 +3,10 @@ title: "Vault (Part 3): Secure Kubernetes Authentication with HashiCorp Vault OI
 summary:
 date: 2025-11-23
 tags:
-  - security/hashicorp-vault
-  - devops/kubernetes
-  - devops/terraform
-  - devops/ansible
+  - devops/security/hashicorp-vault
+  - devops/container/kubernetes
+  - devops/automation/terraform
+  - devops/automation/ansible
 draft: false
 series:
   - Hashicorp Vault

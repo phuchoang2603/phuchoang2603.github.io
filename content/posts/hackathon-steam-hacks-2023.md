@@ -3,7 +3,7 @@ title: My STEAM Hacks 2023 experience
 date: 2023-10-20
 tags:
   - hackathon
-  - language/python
+  - programming/lang/python
 description:
 draft: false
 featureimage: https://i.imgur.com/E17gMsG.jpg

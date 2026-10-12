@@ -3,7 +3,7 @@ title: "Building an AI ArXiv Pipeline: Is n8n the Future of Automation? Not Quit
 description:
 date: 2025-11-02
 tags:
-  - language/python
+  - programming/lang/python
 draft: false
 featureimage: https://i.ibb.co/chTK0Djn/image.png
 ---

@@ -26,8 +26,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       HUGO_CACHEDIR: /tmp/hugo_cache
-      CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID || '8a253dc844b35e546f5c0a8ef2f0e89f' }}
-      CLOUDFLARE_PAGES_PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT || 'phuchoang2603' }}
+      CLOUDFLARE_ACCOUNT_ID: 8a253dc844b35e546f5c0a8ef2f0e89f
+      CLOUDFLARE_PAGES_PROJECT: phuchoang2603
     defaults:
       run:
         working-directory: site
@@ -50,60 +50,6 @@ jobs:
           sparse-checkout: publish
           persist-credentials: false
 
-      - name: Prepare Pages project and deployment URLs
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          python3 - <<'PY'
-          import json
-          import os
-          import re
-          import urllib.error
-          import urllib.request
-
-          token = os.environ.get("CLOUDFLARE_API_TOKEN", "")
-          if not token:
-              raise SystemExit("Set the CLOUDFLARE_API_TOKEN Actions secret with Cloudflare Pages Edit permission.")
-          account = os.environ["CLOUDFLARE_ACCOUNT_ID"]
-          name = os.environ["CLOUDFLARE_PAGES_PROJECT"]
-          if not re.fullmatch(r"[0-9a-f]{32}", account) or not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,57}", name):
-              raise SystemExit("Invalid Cloudflare account ID or Pages project name.")
-          endpoint = f"https://api.cloudflare.com/client/v4/accounts/{account}/pages/projects"
-
-          def request(url, data=None):
-              headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
-              body = json.dumps(data).encode() if data is not None else None
-              try:
-                  with urllib.request.urlopen(urllib.request.Request(url, data=body, headers=headers), timeout=30) as response:
-                      result = json.load(response)
-              except urllib.error.HTTPError as error:
-                  if error.code == 404 and data is None:
-                      return None
-                  raise SystemExit(f"Cloudflare Pages API returned HTTP {error.code}; check the token and account scope.")
-              if not result.get("success"):
-                  raise SystemExit("Cloudflare Pages API request failed.")
-              return result["result"]
-
-          project = request(f"{endpoint}/{name}")
-          if project is None:
-              project = request(endpoint, {"name": name, "production_branch": "main"})
-          if project.get("production_branch") != "main":
-              raise SystemExit("The Pages project's production branch must be main.")
-          if (project.get("source") or {}).get("type") in ("github", "gitlab"):
-              raise SystemExit("Use a Direct Upload Pages project so GitHub Actions owns the build.")
-          hostname = project["subdomain"]
-          if not re.fullmatch(r"[a-z0-9-]+\.pages\.dev", hostname):
-              raise SystemExit("Unexpected Pages project hostname.")
-          branch = "main"
-          base_url = "https://phuchoang.sbs/"
-          if os.environ["GITHUB_EVENT_NAME"] == "pull_request":
-              branch = f"pr-{int(os.environ['PULL_REQUEST_NUMBER'])}"
-              base_url = f"https://{branch}.{hostname}/"
-          with open(os.environ["GITHUB_ENV"], "a") as environment:
-              environment.write(f"DEPLOY_BRANCH={branch}\nBASE_URL={base_url}\nPAGES_HOSTNAME={hostname}\n")
-          PY
-
       - name: Install Nix
         uses: cachix/install-nix-action@v31
 
@@ -124,7 +70,7 @@ jobs:
             ${{ runner.os }}-hugo-
 
       - name: Build Hugo site
-        run: devenv shell build --baseURL "$BASE_URL" --cacheDir "$HUGO_CACHEDIR" --panicOnWarning
+        run: devenv shell build --cacheDir "$HUGO_CACHEDIR" --panicOnWarning
 
       - name: Install Node for Wrangler
         uses: actions/setup-node@v7
@@ -139,19 +85,18 @@ jobs:
           accountId: ${{ env.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: site
           wranglerVersion: "4.149.0"
-          command: pages deploy public --project-name=${{ env.CLOUDFLARE_PAGES_PROJECT }} --branch=${{ env.DEPLOY_BRANCH }} --commit-hash=${{ github.event.pull_request.head.sha || github.sha }}
+          command: pages deploy public --project-name=${{ env.CLOUDFLARE_PAGES_PROJECT }} --branch=${{ github.head_ref || 'main' }} --commit-hash=${{ github.event.pull_request.head.sha || github.sha }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update PR preview comment
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v9
         env:
-          PREVIEW_URL: ${{ steps.pages.outputs.pages-deployment-alias-url || env.BASE_URL }}
-          DEPLOYMENT_URL: ${{ steps.pages.outputs.deployment-url }}
+          PREVIEW_URL: ${{ steps.pages.outputs.deployment-url }}
         with:
           script: |
             const marker = '<!-- cloudflare-pages-preview -->';
-            const body = `${marker}\n🚀 Pull Request Preview available at: ${process.env.PREVIEW_URL}\n\n[View this deployment](${process.env.DEPLOYMENT_URL})`;
+            const body = `${marker}\n🚀 Pull Request Preview available at: ${process.env.PREVIEW_URL}`;
             const { owner, repo } = context.repo;
             const issue_number = context.issue.number;
             const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number });
@@ -166,4 +111,4 @@ jobs:
         env:
           DEPLOYMENT_URL: ${{ steps.pages.outputs.deployment-url }}
         run: |
-          printf 'Cloudflare Pages deployment: %s\n\nSite URL: %s\n' "$DEPLOYMENT_URL" "$BASE_URL" >> "$GITHUB_STEP_SUMMARY"
+          printf 'Cloudflare Pages deployment: %s\n' "$DEPLOYMENT_URL" >> "$GITHUB_STEP_SUMMARY"

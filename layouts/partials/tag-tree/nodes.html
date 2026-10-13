@@ -1,0 +1,35 @@
+{{ $depth := .depth }}
+{{ $prefix := .prefix }}
+{{ $groups := newScratch }}
+{{ range .terms }}
+  {{ $segment := index (split .Term "/") $depth }}
+  {{ $groups.Add $segment (slice .) }}
+{{ end }}
+<ul class="tag-tree__list">
+  {{/* Ranging over string map keys keeps siblings in alphabetical order. */}}
+  {{ range $name, $terms := $groups.Values }}
+    {{ $path := $name }}
+    {{ with $prefix }}{{ $path = printf "%s/%s" . $name }}{{ end }}
+    {{ $children := slice }}
+    {{ range $terms }}
+      {{ if gt (len (split .Term "/")) (add $depth 1) }}
+        {{ $children = $children | append . }}
+      {{ end }}
+    {{ end }}
+    {{ $pages := partial "tag-tree/pages.html" $terms }}
+    {{ if $pages }}
+    <li class="tag-tree__branch">
+      <div class="tag-tree__label">
+        {{ partial "tag-tree/label.html" (dict "name" $name "path" $path "count" (len $pages)) }}
+      </div>
+      {{ if $children }}
+        {{ partial "tag-tree/nodes.html" (dict
+          "terms" $children
+          "prefix" $path
+          "depth" (add $depth 1)
+        ) }}
+      {{ end }}
+    </li>
+    {{ end }}
+  {{ end }}
+</ul>

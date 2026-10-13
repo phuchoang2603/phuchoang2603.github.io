@@ -1,22 +1,26 @@
 {{ define "main" }}
-<article class="max-w-full">
-  {{ if .Params.showHero | default (site.Params.article.showHero | default
-  false) }} {{ $heroStyle := .Params.heroStyle }} {{ if not $heroStyle }}{{
-  $heroStyle = site.Params.article.heroStyle }}{{ end }} {{ $heroStyle := print
-  "hero/" $heroStyle ".html" }} {{ if templates.Exists ( printf "partials/%s"
-  $heroStyle ) }} {{ partial $heroStyle . }} {{ else }} {{ partial
-  "hero/basic.html" . }} {{ end }} {{ end }}
-  <header class="mt-5">
-    {{ if .Params.showBreadcrumbs | default
-    (.Site.Params.article.showBreadcrumbs | default false) }} {{ partial
-    "breadcrumbs.html" . }} {{ end }}
-    <h1 class="mt-0 text-4xl font-extrabold text-neutral-900 dark:text-neutral">
-      {{ .Title | emojify }}
-    </h1>
-  </header>
-  <section class="max-w-full mt-6 prose dark:prose-invert">
-    {{ .Content }}
-  </section>
-  <footer class="pt-8">{{ partial "sharing-links.html" . }}</footer>
-</article>
+  {{ .Scratch.Set "scope" "single" }}
+  <article class="max-w-full">
+    {{ if .Params.showHero | default (site.Params.article.showHero | default false) }}
+      {{ $heroStyle := .Params.heroStyle | default site.Params.article.heroStyle }}
+      {{ $heroPartial := printf "hero/%s.html" $heroStyle }}
+      {{ if templates.Exists (printf "partials/%s" $heroPartial) }}
+        {{ partial $heroPartial . }}
+      {{ else }}
+        {{ partial "hero/basic.html" . }}
+      {{ end }}
+    {{ end }}
+    <header class="mt-5">
+      {{ if .Params.showBreadcrumbs | default (site.Params.article.showBreadcrumbs | default false) }}
+        {{ partial "breadcrumbs.html" . }}
+      {{ end }}
+      <h1 class="mt-0 text-4xl font-extrabold text-neutral-900 dark:text-neutral">
+        {{ .Title | emojify }}
+      </h1>
+    </header>
+    <section class="max-w-full mt-6 prose dark:prose-invert">
+      {{ .Content }}
+    </section>
+    <footer class="pt-8">{{ partial "sharing-links.html" . }}</footer>
+  </article>
 {{ end }}

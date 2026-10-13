@@ -1,0 +1,17 @@
+{{/* Flatten hierarchical tags into unique segments, each linking to its own tag page. */}}
+{{ $seen := newScratch }}
+{{ range .Params.tags }}
+  {{ $path := "" }}
+  {{ range split (lower .) "/" }}
+    {{ $segment := trim . " " }}
+    {{ $path = cond (eq $path "") $segment (printf "%s/%s" $path $segment) }}
+    {{ if not ($seen.Get $path) }}
+      {{ $seen.Set $path true }}
+      {{ with site.GetPage (printf "/tags/%s" $path) }}
+        <a class="relative mt-[0.5rem] me-2" href="{{ .RelPermalink }}">
+          {{ partial "badge.html" $segment }}
+        </a>
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}

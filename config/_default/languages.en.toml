@@ -1,6 +1,6 @@
 disabled = false
-languageCode = "en"
-languageName = "English"
+locale = "en"
+label = "English"
 weight = 1
 title = "/home/fel1x"
 
@@ -11,7 +11,7 @@ rtl = false
 dateFormat = "2 January 2006"
 description = "A blog about my life, my projects and my thoughts"
 
-["params.author"]
+[params.author]
 name = "Felix Hoang"
 headline = "cs student @ USF"
 email = "xuanphuc.a1gv@gmail.com"

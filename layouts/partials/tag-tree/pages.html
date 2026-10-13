@@ -1,0 +1,6 @@
+{{/* Union keeps each article once when it has multiple tags in this branch. */}}
+{{ $pages := first 0 site.RegularPages }}
+{{ range . }}
+  {{ $pages = $pages | union .Pages }}
+{{ end }}
+{{ return ($pages | intersect site.RegularPages) }}

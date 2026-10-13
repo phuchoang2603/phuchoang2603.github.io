@@ -1,0 +1,23 @@
+{{/* Give every tag and parent tag a lowercase path title without changing article front matter. */}}
+{{ $tags := slice }}
+{{ range resources.Match "tag-tree-source/**" }}
+  {{ if eq (path.Ext .Name) ".md" }}
+    {{ $tags = $tags | append (partial "tag-tree/source-tags.html" .Content) }}
+  {{ end }}
+{{ end }}
+{{ $paths := newScratch }}
+{{ range $tags }}
+  {{ $prefix := "" }}
+  {{ range split (lower .) "/" }}
+    {{ if $prefix }}{{ $prefix = printf "%s/%s" $prefix . }}{{ else }}{{ $prefix = . }}{{ end }}
+    {{ $paths.Set $prefix true }}
+  {{ end }}
+{{ end }}
+{{ range $prefix, $_ := $paths.Values }}
+  {{ $.AddPage (dict
+    "kind" "term"
+    "path" $prefix
+    "title" $prefix
+    "params" (dict "tagTreePath" $prefix)
+  ) }}
+{{ end }}

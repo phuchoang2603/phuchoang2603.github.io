@@ -1,0 +1,21 @@
+[[mounts]]
+source = "assets"
+target = "assets"
+
+# Site-owned content, such as the tag page adapter in content/tags/.
+[[mounts]]
+source = "content"
+target = "content"
+
+# Posts are written in the Obsidian vault, cloned next to this repo.
+[[mounts]]
+source = "../obsidian/publish"
+target = "content"
+files = ["**.md", "! draft/**"]
+
+# Expose front matter to the tag adapter as watched resources. Resources are
+# only read, so the Markdown is not published as a downloadable asset.
+[[mounts]]
+source = "../obsidian/publish"
+target = "assets/tag-tree-source"
+files = ["**.md", "! draft/**"]

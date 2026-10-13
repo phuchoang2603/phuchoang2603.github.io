@@ -8,59 +8,85 @@ on:
   pull_request:
     branches: [main]
     types: [opened, synchronize, reopened]
+  # 3. Run when posts change in the Obsidian vault
+  repository_dispatch:
+    types: [obsidian-publish]
+  workflow_dispatch:
 
 # Set permissions
 permissions:
   contents: write # To push to gh-pages
   pull-requests: write # To comment on PRs
 
+concurrency:
+  group: deploy-${{ github.event.pull_request.number || 'main' }}
+  cancel-in-progress: false
+
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     env:
       HUGO_CACHEDIR: /tmp/hugo_cache
+    defaults:
+      run:
+        working-directory: site
     steps:
+      # Hugo mounts ../obsidian/publish, so both repos are checked out side by side.
       - name: Checkout code
         uses: actions/checkout@v4
         with:
+          path: site
           submodules: true
           fetch-depth: 0
 
-      - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v3
+      - name: Checkout Obsidian posts
+        uses: actions/checkout@v4
         with:
-          hugo-version: "0.151.0"
-          extended: true
+          repository: ${{ github.repository_owner }}/obsidian
+          token: ${{ secrets.OBSIDIAN_REPO_TOKEN }}
+          path: obsidian
+          sparse-checkout: publish
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+
+      - name: Enable devenv cache
+        uses: cachix/cachix-action@v16
+        with:
+          name: devenv
+
+      - name: Install devenv
+        run: nix profile add nixpkgs#devenv
 
       # --- Dynamically set the BaseURL ---
       - name: Set up Base URL for PR
         if: github.event_name == 'pull_request'
-        run: echo "BASE_URL=https://${{ github.repository_owner }}.github.io/previews/${{ github.event.pull_request.number }}/" >> $GITHUB_ENV
+        run: echo "BASE_URL=https://${{ github.repository_owner }}.github.io/previews/${{ github.event.pull_request.number }}/" >> "$GITHUB_ENV"
 
       - name: Set up Base URL for Main
-        if: github.event_name == 'push'
-        run: echo "BASE_URL=https://${{ github.repository_owner }}.github.io/" >> $GITHUB_ENV
+        if: github.event_name != 'pull_request'
+        run: echo "BASE_URL=https://${{ github.repository_owner }}.github.io/" >> "$GITHUB_ENV"
 
-      - name: Cache Hugo Modules
+      - name: Cache Hugo resources
         uses: actions/cache@v4
         with:
           path: ${{ env.HUGO_CACHEDIR }}
-          key: ${{ runner.os }}-hugomod-${{ hashFiles('**/go.sum') }}
+          key: ${{ runner.os }}-hugo-${{ hashFiles('site/devenv.lock', 'site/content/**', 'obsidian/publish/**', 'site/config/**', 'site/themes/blowfish/config.toml') }}
           restore-keys: |
-            ${{ runner.os }}-hugomod-
+            ${{ runner.os }}-hugo-
 
       - name: Build Hugo site
-        run: hugo --minify --baseURL "${{ env.BASE_URL }}"
+        run: devenv shell build --baseURL "${{ env.BASE_URL }}" --cacheDir "$HUGO_CACHEDIR"
 
       # --- Deployment Logic ---
 
       - name: Deploy to Main (Root)
-        # Only run this step if we are on the 'main' branch
-        if: github.event_name == 'push'
-        uses: peaceiris/actions-gh-pages@v3
+        # Only run this step for main pushes and Obsidian publishes
+        if: github.event_name != 'pull_request'
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+          publish_dir: ./site/public
           destination_dir: . # Deploy to the root of the branch
           publish_branch: gh-pages
           keep_files: true # IMPORTANT: Do not delete the 'previews' folder
@@ -68,10 +94,10 @@ jobs:
       - name: Deploy to PR (Preview)
         # Only run this step if it's a pull request
         if: github.event_name == 'pull_request'
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+          publish_dir: ./site/public
           destination_dir: previews/${{ github.event.pull_request.number }}
           publish_branch: gh-pages
           # keep_files: false (default) is fine here, it will clean the preview folder

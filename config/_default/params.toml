@@ -68,7 +68,6 @@ showTableOfContents = true
 showRelatedContent = true
 relatedContentLimit = 3
 showTaxonomies = true
-showCategoryOnly = false
 showAuthorsBadges = false
 showWordCount = true
 showComments = true

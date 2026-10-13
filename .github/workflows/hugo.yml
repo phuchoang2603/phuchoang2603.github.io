@@ -12,7 +12,6 @@ on:
 
 permissions:
   contents: read
-  deployments: write
   pull-requests: write
 
 concurrency:
@@ -86,7 +85,6 @@ jobs:
           workingDirectory: site
           wranglerVersion: "4.149.0"
           command: pages deploy public --project-name=${{ env.CLOUDFLARE_PAGES_PROJECT }} --branch=${{ github.head_ref || 'main' }} --commit-hash=${{ github.event.pull_request.head.sha || github.sha }}
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update PR preview comment
         if: github.event_name == 'pull_request'
@@ -106,9 +104,3 @@ jobs:
             } else {
               await github.rest.issues.createComment({ owner, repo, issue_number, body });
             }
-
-      - name: Record deployment URL
-        env:
-          DEPLOYMENT_URL: ${{ steps.pages.outputs.deployment-url }}
-        run: |
-          printf 'Cloudflare Pages deployment: %s\n' "$DEPLOYMENT_URL" >> "$GITHUB_STEP_SUMMARY"

@@ -2,6 +2,7 @@
 # Refer to the theme docs for more details about each of these parameters.
 # https://blowfish.page/docs/getting-started/
 
+baseURL = "https://phuchoang.sbs/"
 timeout = "120s"
 theme = "blowfish"
 defaultContentLanguage = "en"

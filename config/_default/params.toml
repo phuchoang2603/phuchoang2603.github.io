@@ -9,7 +9,8 @@ disableImageOptimization = false
 disableImageOptimizationMD = false
 disableTextInHeader = false
 defaultBackgroundImage = "linkedin-wallpaper.webp"
-hotlinkFeatureImage = false
+# External image hosts must not block publishing; browsers load feature images.
+hotlinkFeatureImage = true
 fingerprintAlgorithm = "sha512"
 giteaDefaultServer = "https://git.fsfe.org"
 forgejoDefaultServer = "https://v11.next.forgejo.org"

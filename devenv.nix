@@ -13,7 +13,7 @@
       # Hugo continues to watch templates, styles, and other assets itself.
       exec watchexec --watch ../obsidian/publish --exts md \
         --restart --quiet --no-vcs-ignore -- \
-        hugo server --buildDrafts --disableFastRender "$@"
+        hugo server --buildDrafts --disableFastRender --renderToMemory "$@"
     '';
     build.exec = ''
       exec hugo --minify "$@"

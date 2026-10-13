@@ -1,3 +1,0 @@
-# Let the browser fetch remote feature images so external image hosts cannot
-# block Hugo's development server. Production keeps its image optimization.
-hotlinkFeatureImage = true

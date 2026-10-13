@@ -11,11 +11,11 @@ target = "content"
 [[mounts]]
 source = "../obsidian/publish"
 target = "content"
-files = ["**.md", "! draft/**"]
+files = ["! draft/**", "*.md", "**/*.md"]
 
 # Expose front matter to the tag adapter as watched resources. Resources are
 # only read, so the Markdown is not published as a downloadable asset.
 [[mounts]]
 source = "../obsidian/publish"
 target = "assets/tag-tree-source"
-files = ["**.md", "! draft/**"]
+files = ["! draft/**", "*.md", "**/*.md"]

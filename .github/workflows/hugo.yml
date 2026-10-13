@@ -1,22 +1,19 @@
-name: Deploy Hugo Site (PRs & Main)
+name: Deploy Hugo to Cloudflare Pages
 
 on:
-  # 1. Run on pushes to main
   push:
     branches: ["main"]
-  # 2. Run on pull requests targeting main
   pull_request:
     branches: [main]
     types: [opened, synchronize, reopened]
-  # 3. Run when posts change in the Obsidian vault
   repository_dispatch:
     types: [obsidian-publish]
   workflow_dispatch:
 
-# Set permissions
 permissions:
-  contents: write # To push to gh-pages
-  pull-requests: write # To comment on PRs
+  contents: read
+  deployments: write
+  pull-requests: write
 
 concurrency:
   group: deploy-${{ github.event.pull_request.number || 'main' }}
@@ -24,28 +21,88 @@ concurrency:
 
 jobs:
   build_and_deploy:
+    # Private Obsidian content and Pages uploads require repository secrets.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     env:
       HUGO_CACHEDIR: /tmp/hugo_cache
+      CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID || '8a253dc844b35e546f5c0a8ef2f0e89f' }}
+      CLOUDFLARE_PAGES_PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT || 'phuchoang2603' }}
     defaults:
       run:
         working-directory: site
     steps:
       # Hugo mounts ../obsidian/publish, so both repos are checked out side by side.
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Checkout website
+        uses: actions/checkout@v7
         with:
           path: site
           submodules: true
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Checkout Obsidian posts
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: ${{ github.repository_owner }}/obsidian
           token: ${{ secrets.OBSIDIAN_REPO_TOKEN }}
           path: obsidian
           sparse-checkout: publish
+          persist-credentials: false
+
+      - name: Prepare Pages project and deployment URLs
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import re
+          import urllib.error
+          import urllib.request
+
+          token = os.environ.get("CLOUDFLARE_API_TOKEN", "")
+          if not token:
+              raise SystemExit("Set the CLOUDFLARE_API_TOKEN Actions secret with Cloudflare Pages Edit permission.")
+          account = os.environ["CLOUDFLARE_ACCOUNT_ID"]
+          name = os.environ["CLOUDFLARE_PAGES_PROJECT"]
+          if not re.fullmatch(r"[0-9a-f]{32}", account) or not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,57}", name):
+              raise SystemExit("Invalid Cloudflare account ID or Pages project name.")
+          endpoint = f"https://api.cloudflare.com/client/v4/accounts/{account}/pages/projects"
+
+          def request(url, data=None):
+              headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+              body = json.dumps(data).encode() if data is not None else None
+              try:
+                  with urllib.request.urlopen(urllib.request.Request(url, data=body, headers=headers), timeout=30) as response:
+                      result = json.load(response)
+              except urllib.error.HTTPError as error:
+                  if error.code == 404 and data is None:
+                      return None
+                  raise SystemExit(f"Cloudflare Pages API returned HTTP {error.code}; check the token and account scope.")
+              if not result.get("success"):
+                  raise SystemExit("Cloudflare Pages API request failed.")
+              return result["result"]
+
+          project = request(f"{endpoint}/{name}")
+          if project is None:
+              project = request(endpoint, {"name": name, "production_branch": "main"})
+          if project.get("production_branch") != "main":
+              raise SystemExit("The Pages project's production branch must be main.")
+          if (project.get("source") or {}).get("type") in ("github", "gitlab"):
+              raise SystemExit("Use a Direct Upload Pages project so GitHub Actions owns the build.")
+          hostname = project["subdomain"]
+          if not re.fullmatch(r"[a-z0-9-]+\.pages\.dev", hostname):
+              raise SystemExit("Unexpected Pages project hostname.")
+          branch = "main"
+          base_url = "https://phuchoang.sbs/"
+          if os.environ["GITHUB_EVENT_NAME"] == "pull_request":
+              branch = f"pr-{int(os.environ['PULL_REQUEST_NUMBER'])}"
+              base_url = f"https://{branch}.{hostname}/"
+          with open(os.environ["GITHUB_ENV"], "a") as environment:
+              environment.write(f"DEPLOY_BRANCH={branch}\nBASE_URL={base_url}\nPAGES_HOSTNAME={hostname}\n")
+          PY
 
       - name: Install Nix
         uses: cachix/install-nix-action@v31
@@ -58,15 +115,6 @@ jobs:
       - name: Install devenv
         run: nix profile add nixpkgs#devenv
 
-      # --- Dynamically set the BaseURL ---
-      - name: Set up Base URL for PR
-        if: github.event_name == 'pull_request'
-        run: echo "BASE_URL=https://${{ github.repository_owner }}.github.io/previews/${{ github.event.pull_request.number }}/" >> "$GITHUB_ENV"
-
-      - name: Set up Base URL for Main
-        if: github.event_name != 'pull_request'
-        run: echo "BASE_URL=https://${{ github.repository_owner }}.github.io/" >> "$GITHUB_ENV"
-
       - name: Cache Hugo resources
         uses: actions/cache@v4
         with:
@@ -76,38 +124,46 @@ jobs:
             ${{ runner.os }}-hugo-
 
       - name: Build Hugo site
-        run: devenv shell build --baseURL "${{ env.BASE_URL }}" --cacheDir "$HUGO_CACHEDIR"
+        run: devenv shell build --baseURL "$BASE_URL" --cacheDir "$HUGO_CACHEDIR" --panicOnWarning
 
-      # --- Deployment Logic ---
-
-      - name: Deploy to Main (Root)
-        # Only run this step for main pushes and Obsidian publishes
-        if: github.event_name != 'pull_request'
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Install Node for Wrangler
+        uses: actions/setup-node@v7
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./site/public
-          destination_dir: . # Deploy to the root of the branch
-          publish_branch: gh-pages
-          keep_files: true # IMPORTANT: Do not delete the 'previews' folder
+          node-version: "24"
 
-      - name: Deploy to PR (Preview)
-        # Only run this step if it's a pull request
+      - name: Deploy to Cloudflare Pages
+        id: pages
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ env.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: site
+          wranglerVersion: "4.149.0"
+          command: pages deploy public --project-name=${{ env.CLOUDFLARE_PAGES_PROJECT }} --branch=${{ env.DEPLOY_BRANCH }} --commit-hash=${{ github.event.pull_request.head.sha || github.sha }}
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update PR preview comment
         if: github.event_name == 'pull_request'
-        uses: peaceiris/actions-gh-pages@v4
+        uses: actions/github-script@v9
+        env:
+          PREVIEW_URL: ${{ steps.pages.outputs.pages-deployment-alias-url || env.BASE_URL }}
+          DEPLOYMENT_URL: ${{ steps.pages.outputs.deployment-url }}
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./site/public
-          destination_dir: previews/${{ github.event.pull_request.number }}
-          publish_branch: gh-pages
-          # keep_files: false (default) is fine here, it will clean the preview folder
+          script: |
+            const marker = '<!-- cloudflare-pages-preview -->';
+            const body = `${marker}\n🚀 Pull Request Preview available at: ${process.env.PREVIEW_URL}\n\n[View this deployment](${process.env.DEPLOYMENT_URL})`;
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number });
+            const previous = comments.find(comment => comment.user.type === 'Bot' && comment.body?.includes(marker));
+            if (previous) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: previous.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
 
-      - name: Add comment with preview link
-        # Only run this step if it's a pull request
-        if: github.event_name == 'pull_request'
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            🚀 Pull Request Preview available at:
-            ${{ env.BASE_URL }}
+      - name: Record deployment URL
+        env:
+          DEPLOYMENT_URL: ${{ steps.pages.outputs.deployment-url }}
+        run: |
+          printf 'Cloudflare Pages deployment: %s\n\nSite URL: %s\n' "$DEPLOYMENT_URL" "$BASE_URL" >> "$GITHUB_STEP_SUMMARY"

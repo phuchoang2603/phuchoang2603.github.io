@@ -1,14 +1,11 @@
-{{ $tags := slice }}
-{{ $content := . }}
 {{ $frontmatter := dict }}
-{{ with findRE `(?s)^---\r?\n(.*?)\r?\n---(?:\r?\n|$)` $content 1 }}
+{{ with findRE `(?s)^---\r?\n(.*?)\r?\n---(?:\r?\n|$)` . 1 }}
   {{ $yaml := replaceRE `(?s)^---\r?\n(.*?)\r?\n---(?:\r?\n|$)$` "$1" (index . 0) }}
   {{ $frontmatter = transform.Unmarshal (dict "format" "yaml") $yaml }}
 {{ else }}
-  {{ with findRE `(?s)^\+\+\+\r?\n(.*?)\r?\n\+\+\+(?:\r?\n|$)` $content 1 }}
+  {{ with findRE `(?s)^\+\+\+\r?\n(.*?)\r?\n\+\+\+(?:\r?\n|$)` $ 1 }}
     {{ $toml := replaceRE `(?s)^\+\+\+\r?\n(.*?)\r?\n\+\+\+(?:\r?\n|$)$` "$1" (index . 0) }}
     {{ $frontmatter = transform.Unmarshal (dict "format" "toml") $toml }}
   {{ end }}
 {{ end }}
-{{ with $frontmatter.tags }}{{ $tags = $tags | append . }}{{ end }}
-{{ return ($tags | uniq) }}
+{{ return ($frontmatter.tags | default slice) }}

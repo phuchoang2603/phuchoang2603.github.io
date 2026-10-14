@@ -1,9 +1,0 @@
-{{ with .terms }}
-  <div class="tag-tree not-prose">
-    {{ partial "tag-tree/nodes.html" (dict
-      "terms" .
-      "prefix" ($.prefix | default "")
-      "depth" ($.depth | default 0)
-    ) }}
-  </div>
-{{ end }}

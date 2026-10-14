@@ -2,7 +2,7 @@
 source = "assets"
 target = "assets"
 
-# Site-owned content, such as the tag page adapter in content/tags/.
+# Site-owned content.
 [[mounts]]
 source = "content"
 target = "content"
@@ -13,9 +13,8 @@ source = "../obsidian/publish"
 target = "content"
 files = ["! draft/**", "*.md", "**/*.md"]
 
-# Expose front matter to the tag adapter as watched resources. Resources are
-# only read, so the Markdown is not published as a downloadable asset.
+# Read tag front matter to customize display labels without changing tag paths.
 [[mounts]]
 source = "../obsidian/publish"
-target = "assets/tag-tree-source"
+target = "assets/tag-label-source"
 files = ["! draft/**", "*.md", "**/*.md"]

@@ -9,7 +9,7 @@
 
   scripts = {
     dev.exec = ''
-      # Rebuild the tag adapter from current Markdown on every content change.
+      # Restart the preview when the published Markdown changes.
       # Hugo continues to watch templates, styles, and other assets itself.
       exec watchexec --watch ../obsidian/publish --exts md \
         --restart --quiet --no-vcs-ignore -- \

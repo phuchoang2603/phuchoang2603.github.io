@@ -1,23 +1,14 @@
-{{/* Give every tag and parent tag a lowercase path title without changing article front matter. */}}
+{{/* Keep taxonomy paths intact; display only the leaf of topic/ and tech/ tags. */}}
 {{ $tags := slice }}
-{{ range resources.Match "tag-tree-source/**" }}
+{{ range resources.Match "tag-label-source/**" }}
   {{ if eq (path.Ext .Name) ".md" }}
-    {{ $tags = $tags | append (partial "tag-tree/source-tags.html" .Content) }}
+    {{ $tags = $tags | append (partial "functions/front-matter-tags.html" .Content) }}
   {{ end }}
 {{ end }}
-{{ $paths := newScratch }}
-{{ range $tags }}
-  {{ $prefix := "" }}
-  {{ range split (lower .) "/" }}
-    {{ if $prefix }}{{ $prefix = printf "%s/%s" $prefix . }}{{ else }}{{ $prefix = . }}{{ end }}
-    {{ $paths.Set $prefix true }}
+{{ range $tag := $tags | uniq }}
+  {{ $tagPath := lower $tag }}
+  {{ if or (strings.HasPrefix $tagPath "topic/") (strings.HasPrefix $tagPath "tech/") }}
+    {{ $leaf := index (last 1 (split $tag "/")) 0 }}
+    {{ $.AddPage (dict "kind" "term" "path" $tagPath "title" $leaf "linkTitle" $leaf) }}
   {{ end }}
-{{ end }}
-{{ range $prefix, $_ := $paths.Values }}
-  {{ $.AddPage (dict
-    "kind" "term"
-    "path" $prefix
-    "title" $prefix
-    "params" (dict "tagTreePath" $prefix)
-  ) }}
 {{ end }}

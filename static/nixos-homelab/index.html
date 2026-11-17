@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NixOS Homelab</title>
+<style>
+  :root {
+    --bg: #fafafa; --fg: #1a1a1a; --muted: #6b7280; --card: #fff; --line: #d4d4d8;
+    --input: #e0e7ff; --common: #dcfce7; --host: #fef3c7; --home: #fce7f3; --svc: #dbeafe;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111114; --fg: #ececf0; --muted: #9a9aa6; --card: #1b1b21; --line: #34343e;
+      --input: #25284a; --common: #17331f; --host: #3a2f10; --home: #3a1a2c; --svc: #14283f;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 32px 16px 48px; background: var(--bg); color: var(--fg);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 1040px; margin: 0 auto; }
+  h1 { margin: 0 0 4px; font-size: 1.6rem; }
+  h2 { margin: 36px 0 12px; font-size: 1rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+  p.lead { margin: 0; color: var(--muted); }
+  a { color: inherit; }
+  code { font: 0.85em ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--input); font-size: .85rem; }
+  .hosts { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  .host { border: 1px solid var(--line); border-radius: 12px; background: var(--card); padding: 16px; }
+  .host h3 { margin: 0; font-size: 1.1rem; }
+  .host .sub { color: var(--muted); font-size: .85rem; margin-bottom: 12px; }
+  .layer { border-radius: 8px; padding: 8px 10px; margin-top: 8px; font-size: .88rem; border: 1px solid var(--line); }
+  .layer b { display: block; font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  .common { background: var(--common); } .hostl { background: var(--host); }
+  .homel { background: var(--home); } .svc { background: var(--svc); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+  .tile { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; background: var(--svc); }
+  .tile b { display: block; font-size: .9rem; }
+  .tile span { color: var(--muted); font-size: .8rem; }
+  footer { margin-top: 40px; color: var(--muted); font-size: .85rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>NixOS Homelab</h1>
+  <p class="lead">One flake builds a desktop, a server and a MacBook from shared modules.
+    <a href="https://github.com/phuchoang2603/nixos">Source on GitHub</a></p>
+
+  <h2>Flake inputs</h2>
+  <div class="row">
+    <span class="chip">nixpkgs (unstable)</span>
+    <span class="chip">home-manager</span>
+    <span class="chip">nix-darwin</span>
+    <span class="chip">agenix</span>
+    <span class="chip">stylix</span>
+    <span class="chip">vicinae extensions</span>
+  </div>
+
+  <h2>Hosts</h2>
+  <div class="hosts">
+    <section class="host">
+      <h3>nixos-desktop</h3>
+      <div class="sub">x86_64-linux, <code>nixosConfigurations</code></div>
+      <div class="layer common"><b>modules/common</b>base, nix settings, Cachix</div>
+      <div class="layer common"><b>modules/nixos</b>audio, desktop, hardware</div>
+      <div class="layer hostl"><b>hosts/nixos-desktop</b>machine settings and hardware</div>
+      <div class="layer homel"><b>home/base + home/linux</b>CLI and GUI apps, Hyprland, Waybar, Hyprlock, Mako, fcitx5</div>
+      <div class="layer homel"><b>Stylix</b>system-wide theme</div>
+    </section>
+
+    <section class="host">
+      <h3>nixos-server</h3>
+      <div class="sub">x86_64-linux, <code>nixosConfigurations</code></div>
+      <div class="layer common"><b>modules/common</b>base, nix settings, Cachix</div>
+      <div class="layer svc"><b>modules/server</b>Docker, storage, SSH, NVIDIA, agenix secrets, deployment</div>
+      <div class="layer hostl"><b>hosts/nixos-server</b>machine settings and hardware</div>
+      <div class="layer homel"><b>home/base + home/server</b>shell and CLI tools</div>
+    </section>
+
+    <section class="host">
+      <h3>macbook</h3>
+      <div class="sub">aarch64-darwin, <code>darwinConfigurations</code></div>
+      <div class="layer common"><b>modules/common</b>base, nix settings, Cachix</div>
+      <div class="layer svc"><b>modules/darwin</b>Dock, Finder, trackpad, privacy, Homebrew</div>
+      <div class="layer hostl"><b>hosts/macbook</b>machine settings</div>
+      <div class="layer homel"><b>home/base + home/darwin</b>CLI and GUI apps, AeroSpace, Karabiner</div>
+      <div class="layer homel"><b>Stylix</b>system-wide theme</div>
+    </section>
+  </div>
+
+  <h2>Server containers</h2>
+  <p class="lead" style="margin-bottom:12px">Defined as NixOS modules under <code>modules/server/containers</code>, run by Docker, with Traefik in front and credentials encrypted by agenix.</p>
+  <div class="grid">
+    <div class="tile"><b>Traefik</b><span>reverse proxy</span></div>
+    <div class="tile"><b>Newt</b><span>tunnel agent</span></div>
+    <div class="tile"><b>Vaultwarden</b><span>passwords</span></div>
+    <div class="tile"><b>KaraKeep</b><span>bookmarks, with Meilisearch</span></div>
+    <div class="tile"><b>SiYuan</b><span>notes</span></div>
+    <div class="tile"><b>Hindsight</b><span>agent memory, Postgres + pgvector</span></div>
+    <div class="tile"><b>CLIProxyAPI</b><span>model API proxy</span></div>
+    <div class="tile"><b>Hermes</b><span>job-application agent</span></div>
+    <div class="tile"><b>Hermes desktop</b><span>browser the agent drives</span></div>
+  </div>
+
+  <footer>Built from the repository layout. See <a href="https://github.com/phuchoang2603/nixos">phuchoang2603/nixos</a> for the details.</footer>
+</main>
+</body>
+</html>
